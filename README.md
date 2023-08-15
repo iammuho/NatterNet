@@ -135,3 +135,7 @@ This section provides a guide to set up NatterNet for local development using Do
    ```sh
    docker-compose -p natternet build
    ```
+
+## License
+
+NatterNet is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for more details.
