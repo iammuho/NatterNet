@@ -1,8 +1,6 @@
 package http
 
 import (
-	"time"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -22,13 +20,13 @@ func NewHTTPServer(opts ...Option) *Server {
 
 	config := fiber.Config{
 		//Prefork:       true,
-		CaseSensitive: true,
-		StrictRouting: true,
-		ServerHeader:  "NatterNet",
-		AppName:       "NatterNet App v0.0.1",
-		ReadTimeout:   50 * time.Second,
-		WriteTimeout:  50 * time.Second,
-		BodyLimit:     1024 * 1024 * 1024,
+		CaseSensitive: options.CaseSensitive,
+		StrictRouting: options.StrictRouting,
+		ServerHeader:  options.ServerHeader,
+		AppName:       options.AppName,
+		ReadTimeout:   options.ReadTimeout,
+		WriteTimeout:  options.WriteTimeout,
+		BodyLimit:     options.BodyLimit,
 	}
 
 	app := fiber.New(config)

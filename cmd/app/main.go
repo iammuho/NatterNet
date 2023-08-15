@@ -27,9 +27,18 @@ func main() {
 	// Create a new http server
 	l.Info("Creating HTTP Server")
 	httpServer := http.NewHTTPServer(
+		http.WithHTTPServerHeader(config.Config.Application.Name),
+		http.WithHTTPServerAppName(fmt.Sprintf("%s v%s", config.Config.Application.Name, config.Config.Application.Version)),
 		http.WithHTTPServerAddress(config.Config.HTTPServer.ListenAddress),
 		http.WithHTTPServerPort(config.Config.HTTPServer.ListenPort),
 		http.WithHTTPServerTLSEnabled(config.Config.HTTPServer.TLSEnabled),
+		http.WithHTTPServerCaseSensitive(config.Config.HTTPServer.CaseSensitive),
+		http.WithHTTPServerStrictRouting(config.Config.HTTPServer.StrictRouting),
+		http.WithHTTPServerReadTimeout(config.Config.HTTPServer.ReadTimeout),
+		http.WithHTTPServerWriteTimeout(config.Config.HTTPServer.WriteTimeout),
+		http.WithHTTPServerMaxConnsPerIP(config.Config.HTTPServer.MaxConnsPerIP),
+		http.WithHTTPServerMaxRequestsPerConn(config.Config.HTTPServer.MaxRequestsPerConn),
+		http.WithHTTPServerBodyLimit(config.Config.HTTPServer.BodyLimit),
 	)
 
 	// Start the http server
