@@ -1,14 +1,18 @@
 # NatterNet
 
+Your real-time chat application built with Golang, MongoDB, WebSockets, and Fasthttp.
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Features](#features)
+3. [Local Development](#local-development)
+4. [Contributing](#contributing)
+5. [License](#license)
+
+## Introduction
+
 NatterNet is a fast and lightweight chat WebSocket service built with Golang, MongoDB, WebSockets, and Fasthttp. It aims to provide a scalable and efficient platform for real-time chat applications.
-
-## Features
-
-- Real-time chat capabilities using WebSockets
-- Fast and efficient HTTP server powered by Fasthttp
-- Persistent message storage with MongoDB
-- Scalable and clean architecture
-- Secure and authenticated connections
 
 ## Features
 
