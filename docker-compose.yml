@@ -1,0 +1,36 @@
+########### Copyright 2023, NatterNet
+## Written by Muhammet Arslan <muhammet.arsln@gmail.com>, August 2023
+#########
+version: "3.2"
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: natternet
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - natternet
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: natternet
+      ME_CONFIG_MONGODB_URL: mongodb://root:natternet@mongo:27017/
+    networks:
+      - natternet
+
+volumes:
+  mongo-data:
+    driver: local
+
+networks:
+  natternet:

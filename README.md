@@ -10,7 +10,7 @@ NatterNet is a fast and lightweight chat WebSocket service built with Golang, Mo
 - Scalable and clean architecture
 - Secure and authenticated connections
 
-## ROADMAP
+## Features
 
 Our plan for the next iterations of NatterNet is outlined below. We welcome contributions that align with this roadmap!
 
@@ -73,6 +73,61 @@ Our plan for the next iterations of NatterNet is outlined below. We welcome cont
   - Database optimizations for scalable message history retrieval
 
 
-## Installation
+## Local Development
 
-TBD.
+This section provides a guide to set up NatterNet for local development using Docker and Docker Compose. This will create an isolated environment with its own database and dependencies.
+
+### Prerequisites
+
+- [Docker](https://www.docker.com/products/docker-desktop)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Go](https://golang.org/dl/)
+
+### Steps
+
+1. **Clone the Repository**
+   ```sh
+   git clone https://github.com/iammuho/natternet.git
+   ```
+
+2. **Navigate to the Project Directory**
+   ```sh
+   cd natternet
+   ```
+
+3. **Build and Start the Docker Services**
+
+   This command will start the services defined in `docker-compose.yml` under the project name `natternet`.
+   ```sh
+   docker-compose -p natternet up -d
+   ```
+
+4. **Start the NatterNet Application**
+    ```sh
+    cd cmd/app/ && go run .
+    ```
+
+    At this point, your NatterNet application should be running, and you can access it in your browser at the specified address (e.g., http://localhost:8080).
+
+5. **Access MongoDB via Mongo-Express**
+
+   You can access the Mongo-Express web interface at `http://localhost:8081`.
+
+6. **Stop the Docker Services**
+
+   When you are done with development, you can stop the Docker services with the following command:
+   ```sh
+   docker-compose -p natternet down
+   ```
+
+### Tips
+
+- The `-d` flag in the `docker-compose up -d` command makes the services run in the background. To view the logs for the services, you can run:
+   ```sh
+   docker-compose -p natternet logs
+   ```
+
+- To rebuild the Docker images (e.g., after changing a `Dockerfile`), you can run:
+   ```sh
+   docker-compose -p natternet build
+   ```
