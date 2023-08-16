@@ -9,10 +9,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Server is a structure which Nats server client
 type server struct {
-	Conn     *mongo.Client
-	Database *mongo.Database
+	conn     *mongo.Client
+	database *mongo.Database
 }
 
 // NewMongoDB creates a new mongodb connection
@@ -40,27 +39,27 @@ func NewMongoDB(opts ...Option) (MongoDBContext, error) {
 	}
 
 	return &server{
-		Conn:     client,
-		Database: client.Database(mongodbOptions.Database),
+		conn:     client,
+		database: client.Database(mongodbOptions.Database),
 	}, nil
 }
 
 // GetConn returns the mongodb connection
 func (s *server) GetConn() *mongo.Client {
-	return s.Conn
+	return s.conn
 }
 
 // GetDatabase returns the mongodb database
 func (s *server) GetDatabase() *mongo.Database {
-	return s.Database
+	return s.database
 }
 
 // Close closes the mongodb connection
 func (s *server) Close() error {
-	return s.Conn.Disconnect(context.Background())
+	return s.conn.Disconnect(context.Background())
 }
 
 // Ping pings the mongodb connection
 func (s *server) Ping() error {
-	return s.Conn.Ping(context.Background(), nil)
+	return s.conn.Ping(context.Background(), nil)
 }
