@@ -45,12 +45,17 @@ func (h *handler) Signin() fiber.Handler {
 		}
 
 		// Setup the command handlers
-		signinCommandHandler := auth.NewSigninQueryHandler(h.ctx)
+		signinCommandHandler := auth.NewSigninCommandHandler(h.ctx)
 
 		// Handle the request
 		res, resErr := signinCommandHandler.Handle(&request)
 
 		if resErr != nil {
+			h.ctx.GetLogger().Logger.Warn(
+				errorhandler.InvalidCredentialsMessage,
+				zap.Error(err),
+			)
+
 			return f.Status(resErr.StatusCode).JSON(resErr)
 		}
 

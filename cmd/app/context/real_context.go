@@ -26,7 +26,7 @@ func NewAppContext(logger *logger.Logger, jwt jwt.JwtContext, mongoContext mongo
 	}
 }
 
-func (c *appContext) GetContext() interface{} {
+func (c *appContext) GetContext() context.Context {
 	return c.ctx
 }
 
