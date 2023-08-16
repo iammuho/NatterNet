@@ -30,6 +30,6 @@ func (s *SigninCommandHandler) Handle(req *dto.SigninReqDTO) (*jwt.JWTResponse, 
 	}
 
 	return s.ctx.GetJwtContext().CreatePair(map[string]interface{}{
-		"ID": res.GetID(),
+		"ID": res.ID,
 	})
 }

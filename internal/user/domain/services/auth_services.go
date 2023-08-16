@@ -3,8 +3,8 @@ package services
 import (
 	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/user/application/auth/dto"
-	"github.com/iammuho/natternet/internal/user/domain/entity"
 	"github.com/iammuho/natternet/internal/user/domain/repository"
+	"github.com/iammuho/natternet/internal/user/domain/values"
 	"github.com/iammuho/natternet/internal/user/infrastructure/mongodb"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 
@@ -12,7 +12,7 @@ import (
 )
 
 type AuthDomainServices interface {
-	Signin(req *dto.SigninReqDTO) (*entity.User, *errorhandler.Response)
+	Signin(req *dto.SigninReqDTO) (*values.UserValue, *errorhandler.Response)
 }
 
 type authDomainServices struct {
@@ -30,7 +30,7 @@ func NewAuthDomainServices(ctx context.AppContext) AuthDomainServices {
 	}
 }
 
-func (a *authDomainServices) Signin(req *dto.SigninReqDTO) (*entity.User, *errorhandler.Response) {
+func (a *authDomainServices) Signin(req *dto.SigninReqDTO) (*values.UserValue, *errorhandler.Response) {
 	// Find the user by login (email or username)
 	user, err := a.userRepository.FindOneByLogin(req.Login)
 
@@ -43,5 +43,5 @@ func (a *authDomainServices) Signin(req *dto.SigninReqDTO) (*entity.User, *error
 		return nil, &errorhandler.Response{Code: errorhandler.InvalidCredentialsErrorCode, Message: errorhandler.InvalidCredentialsMessage, StatusCode: fiber.StatusUnauthorized}
 	}
 
-	return user, nil
+	return values.NewUserValueFromUser(user), nil
 }
