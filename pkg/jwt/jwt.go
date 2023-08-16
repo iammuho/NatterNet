@@ -2,9 +2,11 @@ package jwt
 
 import (
 	"crypto/rsa"
+	"strings"
 	"time"
 
 	"github.com/iammuho/natternet/pkg/errorhandler"
+	"github.com/iammuho/natternet/pkg/utils"
 
 	"github.com/gofiber/fiber/v2"
 	jose "gopkg.in/square/go-jose.v2"
@@ -102,4 +104,36 @@ func (j *jwt) createJWT(claims map[string]interface{}, expire bool, expireDate t
 	}
 
 	return rawJWT, nil
+}
+
+// ParseJWT parses the given JWT token into struct
+func (j *jwt) ParseJWT(auth string) (map[string]interface{}, *errorhandler.Response) {
+
+	// Parse the JWT Token
+	parsedJWT, err := jwtPKG.ParseSigned(parseBearerAuth(auth))
+
+	if err != nil {
+		return nil, &errorhandler.Response{Code: errorhandler.InvalidAccessTokenErrorCode, Message: errorhandler.InvalidAccessTokenMessage, StatusCode: fiber.StatusBadRequest}
+	}
+
+	out := Claims{}
+	err = parsedJWT.Claims(j.publicKey, &out)
+	if err != nil {
+		return nil, &errorhandler.Response{Code: errorhandler.InvalidAccessTokenErrorCode, Message: errorhandler.InvalidAccessTokenMessage, StatusCode: fiber.StatusBadRequest}
+	}
+
+	if utils.IsExpired(out.Expiry.Time()) {
+		return nil, &errorhandler.Response{Code: errorhandler.ExpiredAccessTokenErrorCode, Message: errorhandler.ExpiredAccessTokenMessage, StatusCode: fiber.StatusUnauthorized}
+	}
+
+	return out.CustomClaims, nil
+}
+
+// parseBearerAuth parses the header to get JWT token
+func parseBearerAuth(auth string) string {
+	if strings.HasPrefix(auth, "Bearer ") {
+		bearer := auth[7:]
+		return bearer
+	}
+	return auth
 }

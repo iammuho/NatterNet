@@ -20,6 +20,24 @@ func NewUserRepository(ctx context.AppContext) repository.UserRepository {
 	}
 }
 
+// FindOneByID finds a user by id
+func (u *userRepository) FindOneByID(id string) (*values.UserDBValue, *errorhandler.Response) {
+	collection := u.ctx.GetMongoContext().GetDatabase().Collection("users")
+
+	var user values.UserDBValue
+	err := collection.FindOne(u.ctx.GetContext(), bson.M{"_id": id}).Decode(&user)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+
+		return nil, &errorhandler.Response{Code: errorhandler.DatabaseErrorCode, Message: err.Error()}
+	}
+
+	return &user, nil
+}
+
 // FindOneByLogin finds a user by login (email or username)
 func (u *userRepository) FindOneByLogin(login string) (*values.UserDBValue, *errorhandler.Response) {
 	collection := u.ctx.GetMongoContext().GetDatabase().Collection("users")

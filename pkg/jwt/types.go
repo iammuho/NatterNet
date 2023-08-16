@@ -4,6 +4,7 @@ import "github.com/iammuho/natternet/pkg/errorhandler"
 
 type JwtContext interface {
 	CreatePair(claims map[string]interface{}) (*JWTResponse, *errorhandler.Response)
+	ParseJWT(auth string) (map[string]interface{}, *errorhandler.Response)
 }
 
 type JWTResponse struct {

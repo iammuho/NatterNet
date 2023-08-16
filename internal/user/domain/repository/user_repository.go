@@ -6,6 +6,7 @@ import (
 )
 
 type UserRepository interface {
+	FindOneByID(id string) (*values.UserDBValue, *errorhandler.Response)
 	FindOneByLogin(login string) (*values.UserDBValue, *errorhandler.Response)
 	FindOneByEmail(email string) (*values.UserDBValue, *errorhandler.Response)
 	FindOneByUsername(username string) (*values.UserDBValue, *errorhandler.Response)

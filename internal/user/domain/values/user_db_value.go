@@ -44,3 +44,15 @@ func (u *UserDBValue) ToUserEntity() *entity.User {
 
 	return user
 }
+
+// ToUserValue converts a user db value to a user value
+func (u *UserDBValue) ToUserValue() *UserValue {
+	return &UserValue{
+		ID:        u.ID,
+		Username:  u.Username,
+		Email:     u.Email,
+		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
+	}
+
+}

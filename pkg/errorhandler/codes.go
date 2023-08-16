@@ -12,9 +12,13 @@ const (
 	InvalidCredentialsErrorCode    = 100
 	EmailAlreadyExistsErrorCode    = 101
 	UsernameAlreadyExistsErrorCode = 102
+	InvalidAccessTokenErrorCode    = 103
+	InvalidRefreshTokenErrorCode   = 104
+	ExpiredAccessTokenErrorCode    = 105
+	ExpiredRefreshTokenErrorCode   = 106
 
 	// User related error codes
-
+	UserNotFoundErrorCode = 200
 )
 
 // Error messages
@@ -26,4 +30,11 @@ const (
 	InvalidCredentialsMessage    = "Invalid credentials"
 	EmailAlreadyExistsMessage    = "Email already exists"
 	UsernameAlreadyExistsMessage = "Username already exists"
+	InvalidAccessTokenMessage    = "Invalid access token"
+	InvalidRefreshTokenMessage   = "Invalid refresh token"
+	ExpiredAccessTokenMessage    = "Access token expired"
+	ExpiredRefreshTokenMessage   = "Refresh token expired"
+
+	// User related error messages
+	UserNotFoundMessage = "User not found"
 )
