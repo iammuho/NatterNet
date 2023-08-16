@@ -1,8 +1,6 @@
 package services
 
 import (
-	"log"
-
 	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/user/application/auth/dto"
 	"github.com/iammuho/natternet/internal/user/domain/entity"
@@ -45,11 +43,6 @@ func (a *authDomainServices) SignIn(req *dto.SignInReqDTO) (*values.UserValue, *
 
 	// Convert the db to entity
 	userEntity := user.ToUserEntity()
-
-	log.Print(req.Password)
-	log.Print(userEntity.GetPassword())
-
-	log.Print(userEntity.ComparePassword(req.Password))
 
 	// Check the user password
 	if user == nil || !userEntity.ComparePassword(req.Password) {
