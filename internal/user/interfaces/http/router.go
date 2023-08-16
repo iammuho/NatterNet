@@ -25,14 +25,7 @@ func (h *handler) RegisterRoutes(f fiber.Router) {
 		// Create the auth group
 		auth := user.Group("/auth")
 		{
-			auth.Post("/signin", h.Signin)
+			auth.Post("/signin", h.Signin())
 		}
 	}
-}
-
-// Signin is the handler for the signin route
-func (h *handler) Signin(c *fiber.Ctx) error {
-	return c.JSON(fiber.Map{
-		"status": "ok",
-	})
 }

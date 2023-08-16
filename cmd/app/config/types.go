@@ -43,4 +43,13 @@ type config struct {
 		Username string `env:"MONGODB_USERNAME" envDefault:"root"`
 		Password string `env:"MONGODB_PASSWORD" envDefault:"natternet"`
 	}
+
+	// JWT provides the JWT configuration.
+	JWT struct {
+		PublicKeyPath  string `env:"JWT_PUBLIC_KEY_PATH" envDefault:"/etc/ssl/certs/client.pub.pem"`
+		PrivateKeyPath string `env:"JWT_PRIVATE_KEY_PATH" envDefault:"/etc/ssl/certs/client.pem"`
+		Kid            string `env:"JWT_KID" envDefault:"natternet"`
+		Issuer         string `env:"JWT_ISSUER" envDefault:"natternet"`
+		Subject        string `env:"JWT_SUBJECT" envDefault:"natternet"`
+	}
 }

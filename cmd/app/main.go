@@ -11,6 +11,7 @@ import (
 	"github.com/iammuho/natternet/cmd/app/context"
 	userH "github.com/iammuho/natternet/internal/user/interfaces/http"
 	"github.com/iammuho/natternet/pkg/http"
+	"github.com/iammuho/natternet/pkg/jwt"
 	"github.com/iammuho/natternet/pkg/logger"
 	"github.com/iammuho/natternet/pkg/mongodb"
 
@@ -27,6 +28,19 @@ func main() {
 
 	if err != nil {
 		panic(err)
+	}
+
+	// Add the JWT
+	jwtContext, err := jwt.NewJWT(
+		jwt.WithJWTPublicKeyPath(config.Config.JWT.PublicKeyPath),
+		jwt.WithJWTPrivateKeyPath(config.Config.JWT.PrivateKeyPath),
+		jwt.WithJWTKeyID(config.Config.JWT.Kid),
+		jwt.WithJWTIssuer(config.Config.JWT.Issuer),
+		jwt.WithJWTSubject(config.Config.JWT.Subject),
+	)
+
+	if err != nil {
+		l.Panic("JWT failed to initialize: %v", zap.Error(err))
 	}
 
 	// Create a new http server
@@ -60,7 +74,7 @@ func main() {
 	}
 
 	// Create the app context
-	ctx := context.NewAppContext(l, mongodbContext)
+	ctx := context.NewAppContext(l, jwtContext, mongodbContext)
 
 	// Register the routes
 	v1 := httpServer.App.Group("/api/v1")
