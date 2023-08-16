@@ -17,4 +17,7 @@ func init() {
 	if err := env.Parse(&Config.HTTPServer); err != nil {
 		panic(err)
 	}
+	if err := env.Parse(&Config.MongoDB); err != nil {
+		panic(err)
+	}
 }

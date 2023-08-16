@@ -8,8 +8,13 @@ import (
 	"syscall"
 
 	"github.com/iammuho/natternet/cmd/app/config"
+	"github.com/iammuho/natternet/cmd/app/context"
+	userH "github.com/iammuho/natternet/internal/user/interfaces/http"
 	"github.com/iammuho/natternet/pkg/http"
 	"github.com/iammuho/natternet/pkg/logger"
+	"github.com/iammuho/natternet/pkg/mongodb"
+
+	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
 
@@ -40,6 +45,41 @@ func main() {
 		http.WithHTTPServerMaxRequestsPerConn(config.Config.HTTPServer.MaxRequestsPerConn),
 		http.WithHTTPServerBodyLimit(config.Config.HTTPServer.BodyLimit),
 	)
+
+	// Create the mongo client
+	l.Info("Creating MongoDB Client")
+	mongodbContext, err := mongodb.NewMongoDB(
+		mongodb.WithMongoDBURI(config.Config.MongoDB.URI),
+		mongodb.WithMongoDBDatabase(config.Config.MongoDB.Database),
+		mongodb.WithMongoDBUsername(config.Config.MongoDB.Username),
+		mongodb.WithMongoDBPassword(config.Config.MongoDB.Password),
+	)
+
+	if err != nil {
+		l.Panic("MongoDB Client failed to connect: %v", zap.Error(err))
+	}
+
+	// Create the app context
+	ctx := context.NewAppContext(l, mongodbContext)
+
+	// Register the routes
+	v1 := httpServer.App.Group("/api/v1")
+	{
+		// V1 routes
+		v1 := v1.Group("/")
+		{
+			// Create health check route
+			v1.Get("/health", func(c *fiber.Ctx) error {
+				return c.JSON(fiber.Map{
+					"status": "ok",
+				})
+			})
+
+			// Setup handler
+			userHandler := userH.NewUserHandler(ctx)
+			userHandler.RegisterRoutes(v1)
+		}
+	}
 
 	// Start the http server
 	var wg sync.WaitGroup

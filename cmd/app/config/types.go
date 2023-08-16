@@ -23,7 +23,7 @@ type config struct {
 	// HTTPServer provides the HTTP server configuration.
 	HTTPServer struct {
 		ListenAddress string `env:"SERVER_LISTEN_ADDRESS"     envDefault:"0.0.0.0"`
-		ListenPort    int    `env:"SERVER_LISTEN_PORT"     envDefault:"8081"`
+		ListenPort    int    `env:"SERVER_LISTEN_PORT"     envDefault:"8080"`
 
 		CaseSensitive      bool          `env:"SERVER_CASE_SENSITIVE" envDefault:"true"`
 		StrictRouting      bool          `env:"SERVER_STRICT_ROUTING" envDefault:"true"`
@@ -34,5 +34,13 @@ type config struct {
 		BodyLimit          int           `env:"SERVER_BODY_LIMIT" envDefault:"4096"`
 
 		TLSEnabled bool `env:"SERVER_TLS_ENABLED" envDefault:"false"`
+	}
+
+	// MongoDB provides the MongoDB configuration.
+	MongoDB struct {
+		URI      string `env:"MONGODB_URI" envDefault:"mongodb://localhost:27017"`
+		Database string `env:"MONGODB_DATABASE" envDefault:"natternet"`
+		Username string `env:"MONGODB_USERNAME" envDefault:"root"`
+		Password string `env:"MONGODB_PASSWORD" envDefault:"natternet"`
 	}
 }
