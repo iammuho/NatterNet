@@ -8,20 +8,25 @@ import (
 )
 
 type User struct {
-	id string `json:"id" bson:"_id"`
+	id string
 
 	// Account information
-	username string `json:"username" bson:"username"`
-	password string `json:"password" bson:"password"`
-	email    string `json:"email" bson:"email"`
+	username string
+	password string
+	email    string
 
 	// Timestamps
-	createdAt time.Time  `json:"created_at" bson:"created_at"`
-	updatedAt *time.Time `json:"updated_at" bson:"updated_at"`
+	createdAt time.Time
+	updatedAt *time.Time
 }
 
 func (u *User) generateID() {
 	u.id = uuid.New().String()
+}
+
+// SetID sets the id
+func (u *User) SetID(id string) {
+	u.id = id
 }
 
 // GetID returns the id
@@ -33,6 +38,11 @@ func (u *User) generateCreatedAt() {
 	u.createdAt = time.Now()
 }
 
+// SetCreatedAt sets the created at
+func (u *User) SetCreatedAt(createdAt time.Time) {
+	u.createdAt = createdAt
+}
+
 // GetCreatedAt returns the created at
 func (u *User) GetCreatedAt() time.Time {
 	return u.createdAt
@@ -41,6 +51,11 @@ func (u *User) GetCreatedAt() time.Time {
 func (u *User) generateUpdatedAt() {
 	now := time.Now()
 	u.updatedAt = &now
+}
+
+// SetUpdatedAt sets the updated at
+func (u *User) SetUpdatedAt(updatedAt *time.Time) {
+	u.updatedAt = updatedAt
 }
 
 // GetUpdatedAt returns the updated at
@@ -68,8 +83,13 @@ func (u *User) GetUsername() string {
 	return u.username
 }
 
-// setPassword is a function that hashes and saves the password
-func (u *User) SetPassword(password string) {
+// SetPassword is a function that hashes and saves the password
+func (u *User) SetPassword(password string, hash bool) {
+	if !hash {
+		u.password = password
+		return
+	}
+
 	hashingFactory := hashing.NewHashingFactory()
 
 	// Hash the password
@@ -78,6 +98,12 @@ func (u *User) SetPassword(password string) {
 	u.password = pass
 }
 
+// GetPassword returns the password
+func (u *User) GetPassword() string {
+	return u.password
+}
+
+// ComparePassword is a function that compares the password
 func (u *User) ComparePassword(password string) bool {
 	hashingFactory := hashing.NewHashingFactory()
 
@@ -102,7 +128,7 @@ func NewUser(username string, password string, email string) *User {
 	user.generateCreatedAt()
 
 	// Set the password
-	user.SetPassword(password)
+	user.SetPassword(password, true)
 
 	return user
 }

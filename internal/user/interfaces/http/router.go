@@ -26,6 +26,7 @@ func (h *handler) RegisterRoutes(f fiber.Router) {
 		auth := user.Group("/auth")
 		{
 			auth.Post("/signin", h.Signin())
+			auth.Post("/signup", h.Signup())
 		}
 	}
 }

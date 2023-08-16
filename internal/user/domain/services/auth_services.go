@@ -1,8 +1,11 @@
 package services
 
 import (
+	"log"
+
 	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/user/application/auth/dto"
+	"github.com/iammuho/natternet/internal/user/domain/entity"
 	"github.com/iammuho/natternet/internal/user/domain/repository"
 	"github.com/iammuho/natternet/internal/user/domain/values"
 	"github.com/iammuho/natternet/internal/user/infrastructure/mongodb"
@@ -12,7 +15,8 @@ import (
 )
 
 type AuthDomainServices interface {
-	Signin(req *dto.SigninReqDTO) (*values.UserValue, *errorhandler.Response)
+	SignIn(req *dto.SignInReqDTO) (*values.UserValue, *errorhandler.Response)
+	SignUp(req *dto.SignupReqDTO) (*values.UserValue, *errorhandler.Response)
 }
 
 type authDomainServices struct {
@@ -30,7 +34,8 @@ func NewAuthDomainServices(ctx context.AppContext) AuthDomainServices {
 	}
 }
 
-func (a *authDomainServices) Signin(req *dto.SigninReqDTO) (*values.UserValue, *errorhandler.Response) {
+// Signin is the domain service for the signin route
+func (a *authDomainServices) SignIn(req *dto.SignInReqDTO) (*values.UserValue, *errorhandler.Response) {
 	// Find the user by login (email or username)
 	user, err := a.userRepository.FindOneByLogin(req.Login)
 
@@ -38,10 +43,55 @@ func (a *authDomainServices) Signin(req *dto.SigninReqDTO) (*values.UserValue, *
 		return nil, err
 	}
 
+	// Convert the db to entity
+	userEntity := user.ToUserEntity()
+
+	log.Print(req.Password)
+	log.Print(userEntity.GetPassword())
+
+	log.Print(userEntity.ComparePassword(req.Password))
+
 	// Check the user password
-	if user == nil || !user.ComparePassword(req.Password) {
+	if user == nil || !userEntity.ComparePassword(req.Password) {
 		return nil, &errorhandler.Response{Code: errorhandler.InvalidCredentialsErrorCode, Message: errorhandler.InvalidCredentialsMessage, StatusCode: fiber.StatusUnauthorized}
 	}
 
-	return values.NewUserValueFromUser(user), nil
+	return values.NewUserValueFromUser(userEntity), nil
+}
+
+// SignUp is the domain service for the signup route
+func (a *authDomainServices) SignUp(req *dto.SignupReqDTO) (*values.UserValue, *errorhandler.Response) {
+	// Check if the email already exists
+	user, err := a.userRepository.FindOneByEmail(req.Email)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if user != nil {
+		return nil, &errorhandler.Response{Code: errorhandler.EmailAlreadyExistsErrorCode, Message: errorhandler.EmailAlreadyExistsMessage, StatusCode: fiber.StatusConflict}
+	}
+
+	// Check if the username already exists
+	user, err = a.userRepository.FindOneByUsername(req.Username)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if user != nil {
+		return nil, &errorhandler.Response{Code: errorhandler.UsernameAlreadyExistsErrorCode, Message: errorhandler.UsernameAlreadyExistsMessage, StatusCode: fiber.StatusConflict}
+	}
+
+	// Create a user entity
+	userEntity := entity.NewUser(req.Username, req.Password, req.Email)
+
+	// Create the user
+	err = a.userRepository.Create(values.NewUserDBValueFromUser(userEntity))
+
+	if err != nil {
+		return nil, err
+	}
+
+	return values.NewUserValueFromUser(userEntity), nil
 }

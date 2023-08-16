@@ -9,7 +9,12 @@ const (
 	DatabaseErrorCode         = 4
 
 	// Auth related error codes
-	InvalidCredentialsErrorCode = 100
+	InvalidCredentialsErrorCode    = 100
+	EmailAlreadyExistsErrorCode    = 101
+	UsernameAlreadyExistsErrorCode = 102
+
+	// User related error codes
+
 )
 
 // Error messages
@@ -18,5 +23,7 @@ const (
 	ValidationErrorMessage       = "Invalid request body"
 
 	// Auth related error messages
-	InvalidCredentialsMessage = "Invalid credentials"
+	InvalidCredentialsMessage    = "Invalid credentials"
+	EmailAlreadyExistsMessage    = "Email already exists"
+	UsernameAlreadyExistsMessage = "Username already exists"
 )
