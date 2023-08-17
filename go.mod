@@ -7,6 +7,7 @@ require (
 	github.com/go-playground/validator/v10 v10.15.0
 	github.com/gofiber/fiber/v2 v2.48.0
 	go.mongodb.org/mongo-driver v1.12.1
+	go.uber.org/mock v0.2.0
 	go.uber.org/zap v1.25.0
 	gopkg.in/square/go-jose.v2 v2.6.0
 )

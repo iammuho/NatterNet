@@ -1,5 +1,7 @@
 package services
 
+//go:generate mockgen -destination=mocks/mock_auth_domain_services.go -package=mockauthdomainservices -source=auth_services.go
+
 import (
 	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/user/application/auth/dto"

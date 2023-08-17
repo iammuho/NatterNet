@@ -32,8 +32,6 @@ type config struct {
 		MaxConnsPerIP      int           `env:"SERVER_MAX_CONN_PER_IP" envDefault:"50"`
 		MaxRequestsPerConn int           `env:"SERVER_MAX_REQUESTS_PER_CONN" envDefault:"10"`
 		BodyLimit          int           `env:"SERVER_BODY_LIMIT" envDefault:"4096"`
-
-		TLSEnabled bool `env:"SERVER_TLS_ENABLED" envDefault:"false"`
 	}
 
 	// MongoDB provides the MongoDB configuration.

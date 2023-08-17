@@ -1,5 +1,7 @@
 package mongodb
 
+//go:generate mockgen -destination=mocks/mock_mongodb_contexter.go -package=mongodb_mock -source=interface.go
+
 import "go.mongodb.org/mongo-driver/mongo"
 
 type MongoDBContext interface {

@@ -10,17 +10,11 @@ type HTTPServerOptions struct {
 	ServerHeader string
 	AppName      string
 
-	Address      string
-	Port         int
-	IsTLSEnabled bool
-
-	CaseSensitive      bool
-	StrictRouting      bool
-	ReadTimeout        time.Duration
-	WriteTimeout       time.Duration
-	MaxConnsPerIP      int
-	MaxRequestsPerConn int
-	BodyLimit          int
+	CaseSensitive bool
+	StrictRouting bool
+	ReadTimeout   time.Duration
+	WriteTimeout  time.Duration
+	BodyLimit     int
 }
 
 // WithHTTPServerHeader defines the HTTPServer Header
@@ -34,20 +28,6 @@ func WithHTTPServerHeader(header string) Option {
 func WithHTTPServerAppName(appName string) Option {
 	return func(o *HTTPServerOptions) {
 		o.AppName = appName
-	}
-}
-
-// WithHTTPServerAddress defines the HTTPServer Listening Address
-func WithHTTPServerAddress(address string) Option {
-	return func(o *HTTPServerOptions) {
-		o.Address = address
-	}
-}
-
-// WithHTTPServerPort defines the HTTPServer Listening Port
-func WithHTTPServerPort(port int) Option {
-	return func(o *HTTPServerOptions) {
-		o.Port = port
 	}
 }
 
@@ -79,30 +59,9 @@ func WithHTTPServerWriteTimeout(writeTimeout time.Duration) Option {
 	}
 }
 
-// WithHTTPServerMaxConnsPerIP defines the HTTPServer Max Connections Per IP
-func WithHTTPServerMaxConnsPerIP(maxConnsPerIP int) Option {
-	return func(o *HTTPServerOptions) {
-		o.MaxConnsPerIP = maxConnsPerIP
-	}
-}
-
-// WithHTTPServerMaxRequestsPerConn defines the HTTPServer Max Requests Per Connection
-func WithHTTPServerMaxRequestsPerConn(maxRequestsPerConn int) Option {
-	return func(o *HTTPServerOptions) {
-		o.MaxRequestsPerConn = maxRequestsPerConn
-	}
-}
-
 // WithHTTPServerBodyLimit defines the HTTPServer Body Limit
 func WithHTTPServerBodyLimit(bodyLimit int) Option {
 	return func(o *HTTPServerOptions) {
 		o.BodyLimit = bodyLimit
-	}
-}
-
-// WithHTTPServerTLSEnabled defines the HTTPServer TLS Enabled
-func WithHTTPServerTLSEnabled(isTLSEnabled bool) Option {
-	return func(o *HTTPServerOptions) {
-		o.IsTLSEnabled = isTLSEnabled
 	}
 }

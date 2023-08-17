@@ -49,15 +49,10 @@ func main() {
 	httpServer := http.NewHTTPServer(
 		http.WithHTTPServerHeader(config.Config.Application.Name),
 		http.WithHTTPServerAppName(fmt.Sprintf("%s v%s", config.Config.Application.Name, config.Config.Application.Version)),
-		http.WithHTTPServerAddress(config.Config.HTTPServer.ListenAddress),
-		http.WithHTTPServerPort(config.Config.HTTPServer.ListenPort),
-		http.WithHTTPServerTLSEnabled(config.Config.HTTPServer.TLSEnabled),
 		http.WithHTTPServerCaseSensitive(config.Config.HTTPServer.CaseSensitive),
 		http.WithHTTPServerStrictRouting(config.Config.HTTPServer.StrictRouting),
 		http.WithHTTPServerReadTimeout(config.Config.HTTPServer.ReadTimeout),
 		http.WithHTTPServerWriteTimeout(config.Config.HTTPServer.WriteTimeout),
-		http.WithHTTPServerMaxConnsPerIP(config.Config.HTTPServer.MaxConnsPerIP),
-		http.WithHTTPServerMaxRequestsPerConn(config.Config.HTTPServer.MaxRequestsPerConn),
 		http.WithHTTPServerBodyLimit(config.Config.HTTPServer.BodyLimit),
 	)
 
@@ -107,7 +102,7 @@ func main() {
 	go func() {
 		defer wg.Done()
 		l.Info("Starting HTTP Server")
-		if err := httpServer.App.Listen(fmt.Sprintf("%s:%d", httpServer.Options.Address, httpServer.Options.Port)); err != nil {
+		if err := httpServer.App.Listen(fmt.Sprintf("%s:%d", config.Config.HTTPServer.ListenAddress, config.Config.HTTPServer.ListenPort)); err != nil {
 			l.Panic("HTTP Server Listen failed: %v", zap.Error(err))
 		}
 	}()
