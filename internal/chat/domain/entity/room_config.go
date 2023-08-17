@@ -8,37 +8,27 @@ const (
 )
 
 type RoomConfig struct {
-	maxUsers int
-	roomType RoomType
+	MaxUsers int      `json:"max_users" bson:"max_users"`
+	RoomType RoomType `json:"room_type" bson:"room_type"`
 }
 
 // SetMaxUsers sets the max number of users in a room
 func (rc *RoomConfig) SetMaxUsers(maxUsers int) {
-	rc.maxUsers = maxUsers
-}
-
-// GetMaxUsers gets the max number of users in a room
-func (rc *RoomConfig) GetMaxUsers() int {
-	return rc.maxUsers
+	rc.MaxUsers = maxUsers
 }
 
 // SetRoomType sets the room type
 func (rc *RoomConfig) SetRoomType(roomType RoomType) {
-	rc.roomType = roomType
-}
-
-// GetRoomType gets the room type
-func (rc *RoomConfig) GetRoomType() RoomType {
-	return rc.roomType
+	rc.RoomType = roomType
 }
 
 // NewRoomConfig creates a new RoomConfig
 // TBD: make this configurable via env vars
-func NewRoomConfig() *RoomConfig {
+func NewRoomConfig(roomType RoomType) *RoomConfig {
 	roomConfig := &RoomConfig{}
 
 	roomConfig.SetMaxUsers(2)
-	roomConfig.SetRoomType(RoomTypePrivate)
+	roomConfig.SetRoomType(roomType)
 
 	return roomConfig
 }

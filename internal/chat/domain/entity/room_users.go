@@ -18,89 +18,59 @@ const (
 
 type RoomUser struct {
 	// User Details
-	userID string
-	role   RoomUserRole
+	UserID string       `json:"user_id" bson:"user_id"`
+	Role   RoomUserRole `json:"role" bson:"role"`
 
 	// Status
-	status RoomUserStatus
+	Status RoomUserStatus `json:"status" bson:"status"`
 
 	// Booleans
-	isMuted bool
+	IsMuted bool `json:"is_muted" bson:"is_muted"`
 
 	// Timestamps
-	createdAt time.Time
-	updatedAt *time.Time
+	CreatedAt time.Time  `json:"created_at" bson:"created_at"`
+	UpdatedAt *time.Time `json:"updated_at" bson:"updated_at"`
 }
 
 // SetUserID sets the user id
 func (r *RoomUser) SetUserID(userID string) {
-	r.userID = userID
-}
-
-// GetUserID returns the user id
-func (r *RoomUser) GetUserID() string {
-	return r.userID
+	r.UserID = userID
 }
 
 // SetRole sets the role
 func (r *RoomUser) SetRole(role RoomUserRole) {
-	r.role = role
-}
-
-// GetRole returns the role
-func (r *RoomUser) GetRole() RoomUserRole {
-	return r.role
+	r.Role = role
 }
 
 // SetStatus sets the status
 func (r *RoomUser) SetStatus(status RoomUserStatus) {
-	r.status = status
-}
-
-// GetStatus returns the status
-func (r *RoomUser) GetStatus() RoomUserStatus {
-	return r.status
+	r.Status = status
 }
 
 // SetIsMuted sets the is muted
 func (r *RoomUser) SetIsMuted(isMuted bool) {
-	r.isMuted = isMuted
-}
-
-// GetIsMuted returns the is muted
-func (r *RoomUser) GetIsMuted() bool {
-	return r.isMuted
+	r.IsMuted = isMuted
 }
 
 // SetCreatedAt sets the created at
 func (r *RoomUser) SetCreatedAt(createdAt time.Time) {
-	r.createdAt = createdAt
+	r.CreatedAt = createdAt
 }
 
 // generateCreatedAt generates a new created at timestamp for the room entity
 func (r *RoomUser) generateCreatedAt() {
-	r.createdAt = time.Now()
-}
-
-// GetCreatedAt returns the created at
-func (r *RoomUser) GetCreatedAt() time.Time {
-	return r.createdAt
+	r.CreatedAt = time.Now()
 }
 
 // SetUpdatedAt sets the updated at
 func (r *RoomUser) SetUpdatedAt(updatedAt time.Time) {
-	r.updatedAt = &updatedAt
-}
-
-// GetUpdatedAt returns the updated at
-func (r *RoomUser) GetUpdatedAt() *time.Time {
-	return r.updatedAt
+	r.UpdatedAt = &updatedAt
 }
 
 // generateUpdatedAt generates a new updated at timestamp for the room entity
 func (r *RoomUser) generateUpdatedAt() {
 	now := time.Now()
-	r.updatedAt = &now
+	r.UpdatedAt = &now
 }
 
 // NewRoomUser creates a new room user
