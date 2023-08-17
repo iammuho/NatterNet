@@ -99,8 +99,11 @@ func (h *handler) Signup() fiber.Handler {
 			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
 		}
 
+		// Setup the domain services
+		authDomainServices := services.NewAuthDomainServices(h.ctx)
+
 		// Setup the command handlers
-		signupCommandHandler := auth.NewSignUpCommandHandler(h.ctx)
+		signupCommandHandler := auth.NewSignUpCommandHandler(h.ctx, authDomainServices)
 
 		// Handle the request
 		res, resErr := signupCommandHandler.Handle(&request)

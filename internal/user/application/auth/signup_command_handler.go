@@ -9,21 +9,19 @@ import (
 )
 
 type SignUpCommandHandler struct {
-	ctx context.AppContext
+	ctx               context.AppContext
+	authDomainService services.AuthDomainServices
 }
 
-func NewSignUpCommandHandler(ctx context.AppContext) *SignUpCommandHandler {
+func NewSignUpCommandHandler(ctx context.AppContext, authDomainService services.AuthDomainServices) *SignUpCommandHandler {
 	return &SignUpCommandHandler{
-		ctx: ctx,
+		ctx:               ctx,
+		authDomainService: authDomainService,
 	}
 }
 
 func (s *SignUpCommandHandler) Handle(req *dto.SignupReqDTO) (*jwt.JWTResponse, *errorhandler.Response) {
-	// Initialize the authentication domain service
-	authDomainService := services.NewAuthDomainServices(s.ctx)
-
-	// SignUp the user
-	res, err := authDomainService.SignUp(req)
+	res, err := s.authDomainService.SignUp(req)
 
 	if err != nil {
 		return nil, err

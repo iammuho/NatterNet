@@ -14,12 +14,12 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func TestSignInCommandHandler_Handle(t *testing.T) {
+func TestSignUpCommandHandler_Handle(t *testing.T) {
 	tests := []struct {
 		name           string
-		input          *dto.SignInReqDTO
-		mockSignInResp *values.UserValue
-		mockSignInErr  *errorhandler.Response
+		input          *dto.SignupReqDTO
+		mockSignUpResp *values.UserValue
+		mockSignUpErr  *errorhandler.Response
 		mockJwtResp    *jwt.JWTResponse
 		mockJwtErr     *errorhandler.Response
 		expectedErr    bool
@@ -27,24 +27,25 @@ func TestSignInCommandHandler_Handle(t *testing.T) {
 		expectedExpire int
 	}{
 		{
-			name:           "Successful Signin",
-			input:          &dto.SignInReqDTO{Login: "test", Password: "123456"},
-			mockSignInResp: &values.UserValue{ID: "1"},
+			name:           "Successful Signup",
+			input:          &dto.SignupReqDTO{Email: "test@example.com", Username: "testuser", Password: "12345678"},
+			mockSignUpResp: &values.UserValue{ID: "1"},
 			mockJwtResp:    &jwt.JWTResponse{AccessToken: "test-access-token", RefreshToken: "test-refresh-token", ExpiresIn: 123456},
 			expectedErr:    false,
 			expectedToken:  "test-access-token",
 			expectedExpire: 123456,
 		},
 		{
-			name:          "SignIn Error",
-			input:         &dto.SignInReqDTO{Login: "test", Password: "123456"},
-			mockSignInErr: &errorhandler.Response{Code: 500, Message: "some error"},
-			expectedErr:   true,
+			name:           "SignUp Error",
+			input:          &dto.SignupReqDTO{Email: "test@example.com", Username: "testuser", Password: "12345678"},
+			mockSignUpResp: &values.UserValue{ID: "1"},
+			mockSignUpErr:  &errorhandler.Response{Code: 500, Message: "some error"},
+			expectedErr:    true,
 		},
 		{
 			name:           "CreatePair Error",
-			input:          &dto.SignInReqDTO{Login: "test", Password: "123456"},
-			mockSignInResp: &values.UserValue{ID: "1"},
+			input:          &dto.SignupReqDTO{Email: "test@example.com", Username: "testuser", Password: "12345678"},
+			mockSignUpResp: &values.UserValue{ID: "1"},
 			mockJwtErr:     &errorhandler.Response{Code: 500, Message: "some error"},
 			expectedErr:    true,
 		},
@@ -58,19 +59,24 @@ func TestSignInCommandHandler_Handle(t *testing.T) {
 			mockAppContext := mockcontext.NewMockAppContext(ctrl)
 			mockJwtContext := mockjwt.NewMockJwtContext(ctrl)
 			mockAuthService := mockauthdomainservices.NewMockAuthDomainServices(ctrl)
-			mockAppContext.EXPECT().GetJwtContext().Return(mockJwtContext).AnyTimes()
-			mockAuthService.EXPECT().SignIn(test.input).Return(test.mockSignInResp, test.mockSignInErr).Times(1)
 
-			if test.mockSignInErr == nil {
+			mockAppContext.EXPECT().GetJwtContext().Return(mockJwtContext).AnyTimes()
+			mockAuthService.EXPECT().SignUp(test.input).Return(test.mockSignUpResp, test.mockSignUpErr).Times(1)
+
+			if test.mockSignUpErr == nil {
 				mockJwtContext.EXPECT().CreatePair(gomock.Any()).Return(test.mockJwtResp, test.mockJwtErr).Times(1)
 			}
 
-			cmd := NewSignInCommandHandler(mockAppContext, mockAuthService)
+			cmd := NewSignUpCommandHandler(mockAppContext, mockAuthService)
 			resp, err := cmd.Handle(test.input)
 
 			if test.expectedErr {
 				if err == nil {
 					t.Errorf("Expected an error, but got nil")
+				} else if test.mockJwtErr != nil && err.Code != test.mockJwtErr.Code {
+					t.Errorf("Expected error message to be: %s, but got: %s", test.mockJwtErr.Message, err.Message)
+				} else if test.mockSignUpErr != nil && err.Code != test.mockSignUpErr.Code {
+					t.Errorf("Expected error message to be: %s, but got: %s", test.mockSignUpErr.Message, err.Message)
 				}
 			} else {
 				if err != nil {
@@ -80,6 +86,7 @@ func TestSignInCommandHandler_Handle(t *testing.T) {
 				if resp.AccessToken != test.expectedToken {
 					t.Errorf("Expected access token to be: %s, but got: %s", test.expectedToken, resp.AccessToken)
 				}
+
 			}
 		})
 	}
