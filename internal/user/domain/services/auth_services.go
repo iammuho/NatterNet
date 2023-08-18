@@ -39,11 +39,15 @@ func (a *authDomainServices) SignIn(req *dto.SignInReqDTO) (*values.UserValue, *
 		return nil, err
 	}
 
+	if user == nil {
+		return nil, &errorhandler.Response{Code: errorhandler.InvalidCredentialsErrorCode, Message: errorhandler.InvalidCredentialsMessage, StatusCode: fiber.StatusUnauthorized}
+	}
+
 	// Convert the db to entity
 	userEntity := user.ToUserEntity()
 
 	// Check the user password
-	if user == nil || !a.ctx.GetHashingFactory().ComparePassword(userEntity.GetPassword(), req.Password) {
+	if !a.ctx.GetHashingFactory().ComparePassword(req.Password, userEntity.GetPassword()) {
 		return nil, &errorhandler.Response{Code: errorhandler.InvalidCredentialsErrorCode, Message: errorhandler.InvalidCredentialsMessage, StatusCode: fiber.StatusUnauthorized}
 	}
 

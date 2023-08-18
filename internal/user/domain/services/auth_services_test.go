@@ -71,7 +71,7 @@ func TestAuthDomainServices_SignIn(t *testing.T) {
 
 			// Mock the mockcontext.MockAppContext.GetHashingFactory
 			mockHashingFactory := mockhashingfactory.NewMockHashingFactory(ctrl)
-			mockHashingFactory.EXPECT().ComparePassword(gomock.Any(), test.input.Password).Return(!test.wrongPassword).AnyTimes()
+			mockHashingFactory.EXPECT().ComparePassword(test.input.Password, gomock.Any()).Return(!test.wrongPassword).AnyTimes()
 			mockAppContext.EXPECT().GetHashingFactory().Return(mockHashingFactory).AnyTimes()
 
 			mockUserRepository.EXPECT().FindOneByLogin(test.input.Login).Return(values.NewUserDBValueFromUser(test.mockUser), test.mockUserErr).Times(1)

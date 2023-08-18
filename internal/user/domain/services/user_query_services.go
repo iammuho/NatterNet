@@ -7,7 +7,6 @@ import (
 	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/user/domain/repository"
 	"github.com/iammuho/natternet/internal/user/domain/values"
-	"github.com/iammuho/natternet/internal/user/infrastructure/mongodb"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 )
 
@@ -20,10 +19,7 @@ type userQueryDomainServices struct {
 	userRepository repository.UserRepository
 }
 
-func NewUserQueryDomainServices(ctx context.AppContext) UserQueryDomainServices {
-	// Initialize the repository
-	userRepository := mongodb.NewUserRepository(ctx)
-
+func NewUserQueryDomainServices(ctx context.AppContext, userRepository repository.UserRepository) UserQueryDomainServices {
 	return &userQueryDomainServices{
 		ctx:            ctx,
 		userRepository: userRepository,
