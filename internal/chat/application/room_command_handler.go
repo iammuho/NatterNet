@@ -9,18 +9,17 @@ import (
 )
 
 type RoomCommandHandler struct {
-	ctx context.AppContext
+	ctx                 context.AppContext
+	roomCommandServices services.RoomCommandDomainServices
 }
 
-func NewRoomCommandHandler(ctx context.AppContext) *RoomCommandHandler {
+func NewRoomCommandHandler(ctx context.AppContext, roomCommandServices services.RoomCommandDomainServices) *RoomCommandHandler {
 	return &RoomCommandHandler{
-		ctx: ctx,
+		ctx:                 ctx,
+		roomCommandServices: roomCommandServices,
 	}
 }
 
-func (s *RoomCommandHandler) CreateRoom(req *dto.CreateRoomReqDTO) (*values.RoomValue, *errorhandler.Response) {
-	// Initialize the authentication domain service
-	roomCommandDomainServices := services.NewRoomCommandDomainServices(s.ctx)
-
-	return roomCommandDomainServices.CreateRoom(req)
+func (r *RoomCommandHandler) CreateRoom(req *dto.CreateRoomReqDTO) (*values.RoomValue, *errorhandler.Response) {
+	return r.roomCommandServices.CreateRoom(req)
 }

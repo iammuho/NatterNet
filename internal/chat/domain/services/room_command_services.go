@@ -1,5 +1,7 @@
 package services
 
+//go:generate mockgen -destination=mocks/mock_room_command_services.go -package=mockchatdomainservices -source=room_command_services.go
+
 import (
 	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/chat/application/dto"
