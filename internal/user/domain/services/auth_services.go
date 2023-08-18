@@ -3,8 +3,6 @@ package services
 //go:generate mockgen -destination=mocks/mock_auth_domain_services.go -package=mockuserdomainservices -source=auth_services.go
 
 import (
-	"log"
-
 	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/user/application/auth/dto"
 	"github.com/iammuho/natternet/internal/user/domain/entity"
@@ -60,8 +58,6 @@ func (a *authDomainServices) SignUp(req *dto.SignupReqDTO) (*values.UserValue, *
 	if err != nil {
 		return nil, err
 	}
-
-	log.Print(user)
 
 	if user != nil {
 		return nil, &errorhandler.Response{Code: errorhandler.EmailAlreadyExistsErrorCode, Message: errorhandler.EmailAlreadyExistsMessage, StatusCode: fiber.StatusConflict}
