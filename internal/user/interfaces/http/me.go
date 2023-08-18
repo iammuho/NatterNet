@@ -5,7 +5,7 @@ import (
 
 	"github.com/iammuho/natternet/internal/user/application/user"
 	userDTO "github.com/iammuho/natternet/internal/user/application/user/dto"
-
+	"github.com/iammuho/natternet/internal/user/domain/services"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 
 	"github.com/go-playground/validator/v10"
@@ -38,8 +38,11 @@ func (h *handler) Me() fiber.Handler {
 			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
 		}
 
+		// Initialize the userQueryDomainServices
+		userQueryDomainServices := services.NewUserQueryDomainServices(h.ctx)
+
 		// Setup the command handlers
-		userQueryHandler := user.NewUserQueryHandler(h.ctx)
+		userQueryHandler := user.NewUserQueryHandler(h.ctx, userQueryDomainServices)
 
 		// Handle the request
 		res, resErr := userQueryHandler.QueryUserByID(request)

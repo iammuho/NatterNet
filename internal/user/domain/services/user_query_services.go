@@ -1,5 +1,7 @@
 package services
 
+//go:generate mockgen -destination=mocks/mock_user_query_domain_services.go -package=mockuserdomainservices -source=user_query_services.go
+
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/iammuho/natternet/cmd/app/context"

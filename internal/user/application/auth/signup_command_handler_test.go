@@ -5,7 +5,7 @@ import (
 
 	mockcontext "github.com/iammuho/natternet/cmd/app/context/mocks"
 	"github.com/iammuho/natternet/internal/user/application/auth/dto"
-	mockauthdomainservices "github.com/iammuho/natternet/internal/user/domain/services/mocks"
+	mockuserdomainservices "github.com/iammuho/natternet/internal/user/domain/services/mocks"
 	"github.com/iammuho/natternet/internal/user/domain/values"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 	"github.com/iammuho/natternet/pkg/jwt"
@@ -58,7 +58,7 @@ func TestSignUpCommandHandler_Handle(t *testing.T) {
 
 			mockAppContext := mockcontext.NewMockAppContext(ctrl)
 			mockJwtContext := mockjwt.NewMockJwtContext(ctrl)
-			mockAuthService := mockauthdomainservices.NewMockAuthDomainServices(ctrl)
+			mockAuthService := mockuserdomainservices.NewMockAuthDomainServices(ctrl)
 
 			mockAppContext.EXPECT().GetJwtContext().Return(mockJwtContext).AnyTimes()
 			mockAuthService.EXPECT().SignUp(test.input).Return(test.mockSignUpResp, test.mockSignUpErr).Times(1)

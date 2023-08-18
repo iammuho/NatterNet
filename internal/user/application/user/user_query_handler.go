@@ -9,19 +9,17 @@ import (
 )
 
 type UserQueryHandler struct {
-	ctx context.AppContext
+	ctx                     context.AppContext
+	userQueryDomainServices services.UserQueryDomainServices
 }
 
-func NewUserQueryHandler(ctx context.AppContext) *UserQueryHandler {
+func NewUserQueryHandler(ctx context.AppContext, userQueryDomainServices services.UserQueryDomainServices) *UserQueryHandler {
 	return &UserQueryHandler{
-		ctx: ctx,
+		ctx:                     ctx,
+		userQueryDomainServices: userQueryDomainServices,
 	}
 }
 
 func (s *UserQueryHandler) QueryUserByID(req *dto.QueryUserByIDReqDTO) (*values.UserValue, *errorhandler.Response) {
-	// Initialize the user query domain service
-	userQueryDomainServices := services.NewUserQueryDomainServices(s.ctx)
-
-	// Find the user
-	return userQueryDomainServices.FindByID(req.UserID)
+	return s.userQueryDomainServices.FindByID(req.UserID)
 }
