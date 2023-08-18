@@ -8,9 +8,11 @@ import (
 	context "context"
 	reflect "reflect"
 
+	hashing "github.com/iammuho/natternet/pkg/hashing"
 	jwt "github.com/iammuho/natternet/pkg/jwt"
 	logger "github.com/iammuho/natternet/pkg/logger"
 	mongodb "github.com/iammuho/natternet/pkg/mongodb"
+	utils "github.com/iammuho/natternet/pkg/utils"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -49,6 +51,20 @@ func (m *MockAppContext) GetContext() context.Context {
 func (mr *MockAppContextMockRecorder) GetContext() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContext", reflect.TypeOf((*MockAppContext)(nil).GetContext))
+}
+
+// GetHashingFactory mocks base method.
+func (m *MockAppContext) GetHashingFactory() hashing.HashingFactory {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetHashingFactory")
+	ret0, _ := ret[0].(hashing.HashingFactory)
+	return ret0
+}
+
+// GetHashingFactory indicates an expected call of GetHashingFactory.
+func (mr *MockAppContextMockRecorder) GetHashingFactory() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHashingFactory", reflect.TypeOf((*MockAppContext)(nil).GetHashingFactory))
 }
 
 // GetJwtContext mocks base method.
@@ -91,4 +107,32 @@ func (m *MockAppContext) GetMongoContext() mongodb.MongoDBContext {
 func (mr *MockAppContextMockRecorder) GetMongoContext() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMongoContext", reflect.TypeOf((*MockAppContext)(nil).GetMongoContext))
+}
+
+// GetTimer mocks base method.
+func (m *MockAppContext) GetTimer() utils.Timer {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTimer")
+	ret0, _ := ret[0].(utils.Timer)
+	return ret0
+}
+
+// GetTimer indicates an expected call of GetTimer.
+func (mr *MockAppContextMockRecorder) GetTimer() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTimer", reflect.TypeOf((*MockAppContext)(nil).GetTimer))
+}
+
+// GetUUID mocks base method.
+func (m *MockAppContext) GetUUID() utils.UUID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUUID")
+	ret0, _ := ret[0].(utils.UUID)
+	return ret0
+}
+
+// GetUUID indicates an expected call of GetUUID.
+func (mr *MockAppContextMockRecorder) GetUUID() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUUID", reflect.TypeOf((*MockAppContext)(nil).GetUUID))
 }

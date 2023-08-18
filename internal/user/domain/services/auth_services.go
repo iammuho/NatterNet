@@ -8,7 +8,6 @@ import (
 	"github.com/iammuho/natternet/internal/user/domain/entity"
 	"github.com/iammuho/natternet/internal/user/domain/repository"
 	"github.com/iammuho/natternet/internal/user/domain/values"
-	"github.com/iammuho/natternet/internal/user/infrastructure/mongodb"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,10 +23,7 @@ type authDomainServices struct {
 	userRepository repository.UserRepository
 }
 
-func NewAuthDomainServices(ctx context.AppContext) AuthDomainServices {
-	// Initialize the repository
-	userRepository := mongodb.NewUserRepository(ctx)
-
+func NewAuthDomainServices(ctx context.AppContext, userRepository repository.UserRepository) AuthDomainServices {
 	return &authDomainServices{
 		ctx:            ctx,
 		userRepository: userRepository,
@@ -47,7 +43,7 @@ func (a *authDomainServices) SignIn(req *dto.SignInReqDTO) (*values.UserValue, *
 	userEntity := user.ToUserEntity()
 
 	// Check the user password
-	if user == nil || !userEntity.ComparePassword(req.Password) {
+	if user == nil || !a.ctx.GetHashingFactory().ComparePassword(userEntity.GetPassword(), req.Password) {
 		return nil, &errorhandler.Response{Code: errorhandler.InvalidCredentialsErrorCode, Message: errorhandler.InvalidCredentialsMessage, StatusCode: fiber.StatusUnauthorized}
 	}
 
@@ -79,7 +75,10 @@ func (a *authDomainServices) SignUp(req *dto.SignupReqDTO) (*values.UserValue, *
 	}
 
 	// Create a user entity
-	userEntity := entity.NewUser(req.Username, req.Password, req.Email)
+	uuid := a.ctx.GetUUID().NewUUID()
+	createdAt := a.ctx.GetTimer().Now()
+
+	userEntity := entity.NewUser(uuid, req.Username, req.Password, req.Email, createdAt)
 
 	// Create the user
 	err = a.userRepository.Create(values.NewUserDBValueFromUser(userEntity))

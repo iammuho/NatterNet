@@ -1,5 +1,7 @@
 package repository
 
+//go:generate mockgen -destination=mocks/mock_user_repository.go -package=mockuserrepository -source=user_repository.go
+
 import (
 	"github.com/iammuho/natternet/internal/user/domain/values"
 	"github.com/iammuho/natternet/pkg/errorhandler"

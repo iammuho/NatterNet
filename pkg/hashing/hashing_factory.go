@@ -1,5 +1,7 @@
 package hashing
 
+//go:generate mockgen -destination=mocks/mock_hashing_factory.go -package=mockhashingfactory -source=hashing_factory.go
+
 import (
 	"fmt"
 
@@ -11,8 +13,7 @@ type HashingFactory interface {
 	ComparePassword(password, hash string) bool
 }
 
-type hashingFactory struct {
-}
+type hashingFactory struct{}
 
 func NewHashingFactory() HashingFactory {
 	return &hashingFactory{}

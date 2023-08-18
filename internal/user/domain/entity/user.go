@@ -3,8 +3,7 @@ package entity
 import (
 	"time"
 
-	"github.com/google/uuid"
-	"github.com/iammuho/natternet/internal/user/infrastructure/hashing"
+	"github.com/iammuho/natternet/pkg/hashing"
 )
 
 type User struct {
@@ -20,10 +19,6 @@ type User struct {
 	updatedAt *time.Time
 }
 
-func (u *User) generateID() {
-	u.id = uuid.New().String()
-}
-
 // SetID sets the id
 func (u *User) SetID(id string) {
 	u.id = id
@@ -34,10 +29,6 @@ func (u *User) GetID() string {
 	return u.id
 }
 
-func (u *User) generateCreatedAt() {
-	u.createdAt = time.Now()
-}
-
 // SetCreatedAt sets the created at
 func (u *User) SetCreatedAt(createdAt time.Time) {
 	u.createdAt = createdAt
@@ -46,11 +37,6 @@ func (u *User) SetCreatedAt(createdAt time.Time) {
 // GetCreatedAt returns the created at
 func (u *User) GetCreatedAt() time.Time {
 	return u.createdAt
-}
-
-func (u *User) generateUpdatedAt() {
-	now := time.Now()
-	u.updatedAt = &now
 }
 
 // SetUpdatedAt sets the updated at
@@ -103,20 +89,12 @@ func (u *User) GetPassword() string {
 	return u.password
 }
 
-// ComparePassword is a function that compares the password
-func (u *User) ComparePassword(password string) bool {
-	hashingFactory := hashing.NewHashingFactory()
-
-	// Compare the password
-	return hashingFactory.ComparePassword(password, u.password)
-}
-
 // NewUser is a function that creates a new user
-func NewUser(username string, password string, email string) *User {
+func NewUser(uuid string, username string, password string, email string, createdAt time.Time) *User {
 	user := &User{}
 
 	// Generate the id
-	user.generateID()
+	user.SetID(uuid)
 
 	// Set the username
 	user.SetUsername(username)
@@ -125,7 +103,7 @@ func NewUser(username string, password string, email string) *User {
 	user.SetEmail(email)
 
 	// Generate the timestamps
-	user.generateCreatedAt()
+	user.SetCreatedAt(createdAt)
 
 	// Set the password
 	user.SetPassword(password, true)

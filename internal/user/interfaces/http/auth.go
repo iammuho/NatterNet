@@ -6,6 +6,7 @@ import (
 	"github.com/iammuho/natternet/internal/user/application/auth"
 	"github.com/iammuho/natternet/internal/user/application/auth/dto"
 	"github.com/iammuho/natternet/internal/user/domain/services"
+	"github.com/iammuho/natternet/internal/user/infrastructure/mongodb"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 
 	"github.com/go-playground/validator/v10"
@@ -44,9 +45,11 @@ func (h *handler) Signin() fiber.Handler {
 			}
 			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
 		}
+		// Setup the user repository
+		userRepository := mongodb.NewUserRepository(h.ctx)
 
 		// Setup the domain services
-		authDomainServices := services.NewAuthDomainServices(h.ctx)
+		authDomainServices := services.NewAuthDomainServices(h.ctx, userRepository)
 
 		// Setup the command handlers
 		signinCommandHandler := auth.NewSignInCommandHandler(h.ctx, authDomainServices)
@@ -99,8 +102,11 @@ func (h *handler) Signup() fiber.Handler {
 			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
 		}
 
+		// Setup the user repository
+		userRepository := mongodb.NewUserRepository(h.ctx)
+
 		// Setup the domain services
-		authDomainServices := services.NewAuthDomainServices(h.ctx)
+		authDomainServices := services.NewAuthDomainServices(h.ctx, userRepository)
 
 		// Setup the command handlers
 		signupCommandHandler := auth.NewSignUpCommandHandler(h.ctx, authDomainServices)
