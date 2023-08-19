@@ -87,7 +87,7 @@ func main() {
 			})
 
 			// Setup the user context
-			userCtx := user.NewUserApplication(ctx)
+			userCtx := user.NewApplication(ctx)
 			userHandler := userH.NewUserHandler(userCtx)
 			userHandler.RegisterRoutes(v1)
 

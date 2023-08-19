@@ -16,8 +16,8 @@ type Application struct {
 	UserQueryHandler     user.UserQueryHandler
 }
 
-// NewUserApplication initializes a new user application context with the given app context.
-func NewUserApplication(ctx context.AppContext) *Application {
+// NewApplication initializes a new user application context with the given app context.
+func NewApplication(ctx context.AppContext) *Application {
 	// Setup the user repository
 	userRepository := mongodb.NewUserRepository(ctx)
 
