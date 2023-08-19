@@ -3,10 +3,7 @@ package http
 import (
 	"fmt"
 
-	"github.com/iammuho/natternet/internal/user/application/auth"
 	"github.com/iammuho/natternet/internal/user/application/auth/dto"
-	"github.com/iammuho/natternet/internal/user/domain/services"
-	"github.com/iammuho/natternet/internal/user/infrastructure/mongodb"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 
 	"github.com/go-playground/validator/v10"
@@ -21,7 +18,7 @@ func (h *handler) Signin() fiber.Handler {
 		var request dto.SignInReqDTO
 		err := f.BodyParser(&request)
 		if err != nil {
-			h.ctx.GetLogger().Logger.Warn(
+			h.application.AppContext.GetLogger().Logger.Warn(
 				errorhandler.RequestBodyParseErrorMessage,
 				zap.Error(err),
 			)
@@ -34,7 +31,7 @@ func (h *handler) Signin() fiber.Handler {
 		// Validate the request
 		err = validate.Struct(request)
 		if err != nil {
-			h.ctx.GetLogger().Logger.Warn(
+			h.application.AppContext.GetLogger().Logger.Warn(
 				errorhandler.ValidationErrorMessage,
 				zap.Error(err),
 			)
@@ -45,20 +42,12 @@ func (h *handler) Signin() fiber.Handler {
 			}
 			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
 		}
-		// Setup the user repository
-		userRepository := mongodb.NewUserRepository(h.ctx)
-
-		// Setup the domain services
-		authDomainServices := services.NewAuthDomainServices(h.ctx, userRepository)
-
-		// Setup the command handlers
-		signinCommandHandler := auth.NewSignInCommandHandler(h.ctx, authDomainServices)
 
 		// Handle the request
-		res, resErr := signinCommandHandler.Handle(&request)
+		res, resErr := h.application.SigninCommandHandler.Handle(&request)
 
 		if resErr != nil {
-			h.ctx.GetLogger().Logger.Warn(
+			h.application.AppContext.GetLogger().Logger.Warn(
 				errorhandler.InvalidCredentialsMessage,
 				zap.Error(err),
 			)
@@ -77,7 +66,7 @@ func (h *handler) Signup() fiber.Handler {
 		var request dto.SignupReqDTO
 		err := f.BodyParser(&request)
 		if err != nil {
-			h.ctx.GetLogger().Logger.Warn(
+			h.application.AppContext.GetLogger().Logger.Warn(
 				errorhandler.RequestBodyParseErrorMessage,
 				zap.Error(err),
 			)
@@ -90,7 +79,7 @@ func (h *handler) Signup() fiber.Handler {
 		// Validate the request
 		err = validate.Struct(request)
 		if err != nil {
-			h.ctx.GetLogger().Logger.Warn(
+			h.application.AppContext.GetLogger().Logger.Warn(
 				errorhandler.ValidationErrorMessage,
 				zap.Error(err),
 			)
@@ -102,20 +91,11 @@ func (h *handler) Signup() fiber.Handler {
 			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
 		}
 
-		// Setup the user repository
-		userRepository := mongodb.NewUserRepository(h.ctx)
-
-		// Setup the domain services
-		authDomainServices := services.NewAuthDomainServices(h.ctx, userRepository)
-
-		// Setup the command handlers
-		signupCommandHandler := auth.NewSignUpCommandHandler(h.ctx, authDomainServices)
-
 		// Handle the request
-		res, resErr := signupCommandHandler.Handle(&request)
+		res, resErr := h.application.SignupCommandHandler.Handle(&request)
 
 		if resErr != nil {
-			h.ctx.GetLogger().Logger.Warn(
+			h.application.AppContext.GetLogger().Logger.Warn(
 				errorhandler.InvalidCredentialsMessage,
 				zap.Error(err),
 			)

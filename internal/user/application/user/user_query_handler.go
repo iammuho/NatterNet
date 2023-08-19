@@ -8,18 +8,22 @@ import (
 	"github.com/iammuho/natternet/pkg/errorhandler"
 )
 
-type UserQueryHandler struct {
+type UserQueryHandler interface {
+	QueryUserByID(req *dto.QueryUserByIDReqDTO) (*values.UserValue, *errorhandler.Response)
+}
+
+type userQueryHandler struct {
 	ctx                     context.AppContext
 	userQueryDomainServices services.UserQueryDomainServices
 }
 
-func NewUserQueryHandler(ctx context.AppContext, userQueryDomainServices services.UserQueryDomainServices) *UserQueryHandler {
-	return &UserQueryHandler{
+func NewUserQueryHandler(ctx context.AppContext, userQueryDomainServices services.UserQueryDomainServices) UserQueryHandler {
+	return &userQueryHandler{
 		ctx:                     ctx,
 		userQueryDomainServices: userQueryDomainServices,
 	}
 }
 
-func (s *UserQueryHandler) QueryUserByID(req *dto.QueryUserByIDReqDTO) (*values.UserValue, *errorhandler.Response) {
+func (s *userQueryHandler) QueryUserByID(req *dto.QueryUserByIDReqDTO) (*values.UserValue, *errorhandler.Response) {
 	return s.userQueryDomainServices.FindByID(req.UserID)
 }

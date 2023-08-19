@@ -6,6 +6,7 @@ import (
 	"github.com/iammuho/natternet/internal/chat/application"
 	"github.com/iammuho/natternet/internal/chat/application/dto"
 	"github.com/iammuho/natternet/internal/chat/domain/services"
+	"github.com/iammuho/natternet/internal/chat/infrastructure/mongodb"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 
 	"github.com/go-playground/validator/v10"
@@ -47,8 +48,11 @@ func (h *handler) CreateRoom() fiber.Handler {
 			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
 		}
 
+		// Initialize the room repository
+		roomRepository := mongodb.NewRoomRepository(h.ctx)
+
 		// Initialize the room command domain services
-		roomCommandDomainServices := services.NewRoomCommandDomainServices(h.ctx)
+		roomCommandDomainServices := services.NewRoomCommandDomainServices(h.ctx, roomRepository)
 
 		// Setup the command handlers
 		roomCommandHandler := application.NewRoomCommandHandler(h.ctx, roomCommandDomainServices)

@@ -10,6 +10,7 @@ import (
 	"github.com/iammuho/natternet/cmd/app/config"
 	"github.com/iammuho/natternet/cmd/app/context"
 	chatH "github.com/iammuho/natternet/internal/chat/interfaces/http"
+	"github.com/iammuho/natternet/internal/user"
 	userH "github.com/iammuho/natternet/internal/user/interfaces/http"
 	"github.com/iammuho/natternet/pkg/http"
 	"github.com/iammuho/natternet/pkg/jwt"
@@ -85,8 +86,9 @@ func main() {
 				})
 			})
 
-			// Setup handler
-			userHandler := userH.NewUserHandler(ctx)
+			// Setup the user context
+			userCtx := user.NewUserApplication(ctx)
+			userHandler := userH.NewUserHandler(userCtx)
 			userHandler.RegisterRoutes(v1)
 
 			// Chat Handlers

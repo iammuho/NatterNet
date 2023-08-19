@@ -2,8 +2,6 @@ package entity
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Room struct {
@@ -21,11 +19,6 @@ type Room struct {
 	// Timestamps
 	createdAt time.Time
 	updatedAt *time.Time
-}
-
-// generateID generates a new ID for the room entity
-func (r *Room) generateID() {
-	r.id = uuid.New().String()
 }
 
 // ID returns the ID of the room entity
@@ -113,11 +106,6 @@ func (r *Room) GetLastMessageAt() *time.Time {
 	return r.lastMessageAt
 }
 
-// generateCreatedAt generates a new created at timestamp for the room entity
-func (r *Room) generateCreatedAt() {
-	r.createdAt = time.Now()
-}
-
 // SetCreatedAt sets the created at timestamp for the room entity
 func (r *Room) SetCreatedAt(t time.Time) {
 	r.createdAt = t
@@ -126,12 +114,6 @@ func (r *Room) SetCreatedAt(t time.Time) {
 // GetCreatedAt returns the created at timestamp of the room entity
 func (r *Room) GetCreatedAt() time.Time {
 	return r.createdAt
-}
-
-// generateUpdatedAt generates a new updated at timestamp for the room entity
-func (r *Room) generateUpdatedAt() {
-	now := time.Now()
-	r.updatedAt = &now
 }
 
 // SetUpdatedAt sets the updated at timestamp for the room entity
@@ -145,14 +127,13 @@ func (r *Room) GetUpdatedAt() *time.Time {
 }
 
 // NewRoom creates a new room entity
-func NewRoom(meta RoomMeta, roomType RoomType) *Room {
+func NewRoom(uuid string, meta RoomMeta, roomType RoomType, createdAt time.Time) *Room {
 	room := &Room{}
-	room.generateID()
+	room.SetID(uuid)
 	room.SetRoomConfig(*NewRoomConfig(roomType))
 	room.SetRoomMeta(meta)
 	room.SetRoomUsers([]RoomUser{})
-	room.generateCreatedAt()
-	room.generateUpdatedAt()
+	room.SetCreatedAt(createdAt)
 
 	return room
 }

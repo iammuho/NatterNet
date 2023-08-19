@@ -8,19 +8,23 @@ import (
 	"github.com/iammuho/natternet/pkg/jwt"
 )
 
-type SignInCommandHandler struct {
+type SignInCommandHandler interface {
+	Handle(req *dto.SignInReqDTO) (*jwt.JWTResponse, *errorhandler.Response)
+}
+
+type signInCommandHandler struct {
 	ctx                context.AppContext
 	authDomainServices services.AuthDomainServices
 }
 
-func NewSignInCommandHandler(ctx context.AppContext, authDomainService services.AuthDomainServices) *SignInCommandHandler {
-	return &SignInCommandHandler{
+func NewSignInCommandHandler(ctx context.AppContext, authDomainService services.AuthDomainServices) SignInCommandHandler {
+	return &signInCommandHandler{
 		ctx:                ctx,
 		authDomainServices: authDomainService,
 	}
 }
 
-func (s *SignInCommandHandler) Handle(req *dto.SignInReqDTO) (*jwt.JWTResponse, *errorhandler.Response) {
+func (s *signInCommandHandler) Handle(req *dto.SignInReqDTO) (*jwt.JWTResponse, *errorhandler.Response) {
 	// SignIn the user
 	res, err := s.authDomainServices.SignIn(req)
 

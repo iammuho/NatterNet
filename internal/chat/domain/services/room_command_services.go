@@ -8,7 +8,6 @@ import (
 	"github.com/iammuho/natternet/internal/chat/domain/entity"
 	"github.com/iammuho/natternet/internal/chat/domain/repository"
 	"github.com/iammuho/natternet/internal/chat/domain/values"
-	"github.com/iammuho/natternet/internal/chat/infrastructure/mongodb"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 )
 
@@ -21,10 +20,7 @@ type roomCommandDomainServices struct {
 	roomRepository repository.RoomRepository
 }
 
-func NewRoomCommandDomainServices(ctx context.AppContext) RoomCommandDomainServices {
-	// Initialize the repository
-	roomRepository := mongodb.NewRoomRepository(ctx)
-
+func NewRoomCommandDomainServices(ctx context.AppContext, roomRepository repository.RoomRepository) RoomCommandDomainServices {
 	return &roomCommandDomainServices{
 		ctx:            ctx,
 		roomRepository: roomRepository,
@@ -33,13 +29,17 @@ func NewRoomCommandDomainServices(ctx context.AppContext) RoomCommandDomainServi
 
 // CreateRoom creates a new room
 func (r *roomCommandDomainServices) CreateRoom(req *dto.CreateRoomReqDTO) (*values.RoomValue, *errorhandler.Response) {
+	// Create a user entity
+	uuid := r.ctx.GetUUID().NewUUID()
+	createdAt := r.ctx.GetTimer().Now()
+
 	roomType := entity.RoomTypePrivate
 	// Prepare the room type
 	if req.IsGroup {
 		roomType = entity.RoomTypeGroup
 	}
 	// Create the room
-	roomEntity := entity.NewRoom(*entity.NewRoomMeta(req.Name, req.Description), roomType)
+	roomEntity := entity.NewRoom(uuid, *entity.NewRoomMeta(req.Name, req.Description), roomType, createdAt)
 
 	// Add users
 	for _, user := range req.UserIDs {

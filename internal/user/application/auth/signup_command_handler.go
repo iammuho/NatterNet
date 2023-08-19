@@ -8,19 +8,23 @@ import (
 	"github.com/iammuho/natternet/pkg/jwt"
 )
 
-type SignUpCommandHandler struct {
+type SignUpCommandHandler interface {
+	Handle(req *dto.SignupReqDTO) (*jwt.JWTResponse, *errorhandler.Response)
+}
+
+type signUpCommandHandler struct {
 	ctx               context.AppContext
 	authDomainService services.AuthDomainServices
 }
 
-func NewSignUpCommandHandler(ctx context.AppContext, authDomainService services.AuthDomainServices) *SignUpCommandHandler {
-	return &SignUpCommandHandler{
+func NewSignUpCommandHandler(ctx context.AppContext, authDomainService services.AuthDomainServices) SignUpCommandHandler {
+	return &signUpCommandHandler{
 		ctx:               ctx,
 		authDomainService: authDomainService,
 	}
 }
 
-func (s *SignUpCommandHandler) Handle(req *dto.SignupReqDTO) (*jwt.JWTResponse, *errorhandler.Response) {
+func (s *signUpCommandHandler) Handle(req *dto.SignupReqDTO) (*jwt.JWTResponse, *errorhandler.Response) {
 	res, err := s.authDomainService.SignUp(req)
 
 	if err != nil {

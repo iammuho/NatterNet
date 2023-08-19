@@ -1,20 +1,20 @@
 package http
 
 import (
-	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/shared/interfaces/http"
+	"github.com/iammuho/natternet/internal/user"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type handler struct {
-	ctx context.AppContext
+	application *user.Application
 }
 
 // NewUserHandler is the constructor for the user domain handler
-func NewUserHandler(ctx context.AppContext) *handler {
+func NewUserHandler(application *user.Application) *handler {
 	return &handler{
-		ctx: ctx,
+		application: application,
 	}
 }
 
@@ -27,7 +27,7 @@ func (h *handler) RegisterRoutes(f fiber.Router) {
 		auth.Post("/signup", h.Signup())
 	}
 
-	middleware := http.NewMiddleware(h.ctx)
+	middleware := http.NewMiddleware(h.application.AppContext)
 
 	// Create the user me group
 	user := f.Group("/user", middleware.Protected())
