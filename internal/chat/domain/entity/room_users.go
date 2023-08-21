@@ -74,14 +74,14 @@ func (r *RoomUser) generateUpdatedAt() {
 }
 
 // NewRoomUser creates a new room user
-func NewRoomUser(userID string, role RoomUserRole) *RoomUser {
+func NewRoomUser(userID string, role RoomUserRole, createdAt time.Time) *RoomUser {
 	roomUser := &RoomUser{}
 
 	roomUser.SetUserID(userID)
 	roomUser.SetRole(role)
 	roomUser.SetStatus(RoomUserStatusActive)
 	roomUser.SetIsMuted(false)
-	roomUser.generateCreatedAt()
+	roomUser.SetCreatedAt(createdAt)
 
 	return roomUser
 }

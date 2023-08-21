@@ -20,6 +20,10 @@ func TestRoomCommandDomainServices_CreateRoom(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
+	// Generate a fixed UUID and time
+	uuid := "roomID"
+	createdAt := time.Now()
+
 	mockAppContext := mockcontext.NewMockAppContext(ctrl)
 	mockUUID := mockutils.NewMockUUID(ctrl)
 	mockTimer := mockutils.NewMockTimer(ctrl)
@@ -39,14 +43,41 @@ func TestRoomCommandDomainServices_CreateRoom(t *testing.T) {
 				Name:        "Test Room",
 				Description: "This is a test room",
 				IsGroup:     true,
-				UserIDs:     []string{"1", "2"},
+				Owner:       "1",
+				UserIDs:     []string{"2"},
 			},
 			expectedRoom: &values.RoomValue{
-				ID: "1",
+				ID: "roomID",
 				Meta: entity.RoomMeta{
 					Name:        "Test Room",
 					Description: "This is a test room",
 				},
+				Config: entity.RoomConfig{
+					MaxUsers: 2,
+					RoomType: "group",
+				},
+				Users: []entity.RoomUser{
+					{
+						UserID:    "1",
+						Role:      "admin",
+						Status:    "active",
+						IsMuted:   false,
+						CreatedAt: createdAt,
+						UpdatedAt: nil,
+					},
+					{
+						UserID:    "2",
+						Role:      "member",
+						Status:    "active",
+						IsMuted:   false,
+						CreatedAt: createdAt,
+						UpdatedAt: nil,
+					},
+				},
+				LastMessageID: "",
+				LastMessageAt: nil,
+				CreatedAt:     createdAt,
+				UpdatedAt:     nil,
 			},
 			expectedError: nil,
 		},
@@ -54,9 +85,6 @@ func TestRoomCommandDomainServices_CreateRoom(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			// Generate a fixed UUID and time
-			uuid := "roomID"
-			createdAt := time.Now()
 
 			// Set up mock expectations
 			mockAppContext.EXPECT().GetUUID().Return(mockUUID).Times(1)

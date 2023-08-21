@@ -9,5 +9,6 @@ type CreateRoomReqDTO struct {
 	IsGroup bool `json:"is_group"`
 
 	// Users
-	UserIDs []string `json:"user_ids" validate:"required"`
+	Owner   string   `json:"owner" validate:"required"`
+	UserIDs []string `json:"user_ids"`
 }

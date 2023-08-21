@@ -41,9 +41,12 @@ func (r *roomCommandDomainServices) CreateRoom(req *dto.CreateRoomReqDTO) (*valu
 	// Create the room
 	roomEntity := entity.NewRoom(uuid, *entity.NewRoomMeta(req.Name, req.Description), roomType, createdAt)
 
-	// Add users
+	// Add the owner to the room as an admin
+	roomEntity.AddRoomUser(*entity.NewRoomUser(req.Owner, entity.RoomUserRoleAdmin, createdAt))
+
+	// Add other users as member
 	for _, user := range req.UserIDs {
-		roomEntity.AddRoomUser(*entity.NewRoomUser(user, entity.RoomUserRoleAdmin))
+		roomEntity.AddRoomUser(*entity.NewRoomUser(user, entity.RoomUserRoleMember, createdAt))
 	}
 
 	// Create the room

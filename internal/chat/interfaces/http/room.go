@@ -29,7 +29,7 @@ func (h *handler) CreateRoom() fiber.Handler {
 			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.RequestBodyParseErrorCode, Message: errorhandler.RequestBodyParseErrorMessage, StatusCode: fiber.StatusBadRequest})
 		}
 
-		request.UserIDs = append(request.UserIDs, f.Locals("userID").(string))
+		request.Owner = f.Locals("userID").(string)
 
 		validate := validator.New()
 

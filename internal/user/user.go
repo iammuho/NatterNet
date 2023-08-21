@@ -33,7 +33,9 @@ func NewApplication(ctx context.AppContext) *Application {
 	userQueryHandler := user.NewUserQueryHandler(ctx, userQueryDomainServices)
 
 	return &Application{
-		AppContext:           ctx,
+		AppContext: ctx,
+
+		// Application layer
 		SigninCommandHandler: signinCommandHandler,
 		SignupCommandHandler: signupCommandHandler,
 		UserQueryHandler:     userQueryHandler,
