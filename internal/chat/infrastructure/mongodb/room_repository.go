@@ -7,6 +7,7 @@ import (
 	"github.com/iammuho/natternet/internal/chat/domain/values"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -91,4 +92,23 @@ func (u *roomRepository) QueryRooms(req *dto.QueryRoomsReqDTO) ([]*values.RoomVa
 	}
 
 	return rooms, nil
+}
+
+// GetRoomByID gets a room by id
+func (u *roomRepository) GetRoomByID(id string) (*values.RoomValue, *errorhandler.Response) {
+	ctx := u.ctx.GetContext()
+
+	collection := u.ctx.GetMongoContext().GetDatabase().Collection("rooms")
+
+	// Query
+	var room values.RoomValue
+
+	if err := collection.FindOne(ctx, bson.D{{Key: "_id", Value: id}}).Decode(&room); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, &errorhandler.Response{Code: errorhandler.DatabaseErrorCode, Message: err.Error()}
+	}
+
+	return &room, nil
 }

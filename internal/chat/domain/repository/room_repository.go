@@ -14,4 +14,5 @@ type RoomRepository interface {
 
 	// Queries
 	QueryRooms(req *dto.QueryRoomsReqDTO) ([]*values.RoomValue, *errorhandler.Response)
+	GetRoomByID(id string) (*values.RoomValue, *errorhandler.Response)
 }

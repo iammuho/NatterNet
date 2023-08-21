@@ -34,3 +34,17 @@ func NewRoomValueFromRoom(room *entity.Room) *RoomValue {
 		UpdatedAt: room.GetUpdatedAt(),
 	}
 }
+
+// ToRoom converts a room value to a room entity
+func (r *RoomValue) ToRoom() *entity.Room {
+	room := &entity.Room{}
+
+	room.SetID(r.ID)
+	room.SetRoomMeta(r.Meta)
+	room.SetRoomConfig(r.Config)
+	room.SetRoomUsers(r.Users)
+	room.SetCreatedAt(r.CreatedAt)
+	room.SetUpdatedAt(r.UpdatedAt)
+
+	return room
+}

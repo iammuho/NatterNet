@@ -36,6 +36,21 @@ func (m *MockRoomQueryDomainServices) EXPECT() *MockRoomQueryDomainServicesMockR
 	return m.recorder
 }
 
+// GetRoomByID mocks base method.
+func (m *MockRoomQueryDomainServices) GetRoomByID(arg0 string) (*values.RoomValue, *errorhandler.Response) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRoomByID", arg0)
+	ret0, _ := ret[0].(*values.RoomValue)
+	ret1, _ := ret[1].(*errorhandler.Response)
+	return ret0, ret1
+}
+
+// GetRoomByID indicates an expected call of GetRoomByID.
+func (mr *MockRoomQueryDomainServicesMockRecorder) GetRoomByID(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoomByID", reflect.TypeOf((*MockRoomQueryDomainServices)(nil).GetRoomByID), arg0)
+}
+
 // QueryRooms mocks base method.
 func (m *MockRoomQueryDomainServices) QueryRooms(arg0 *dto.QueryRoomsReqDTO) ([]*values.RoomValue, *errorhandler.Response) {
 	m.ctrl.T.Helper()

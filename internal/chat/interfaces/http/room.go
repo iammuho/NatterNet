@@ -11,8 +11,8 @@ import (
 	"go.uber.org/zap"
 )
 
-// CreateRoom is the handler for the create room path
-func (h *handler) CreateRoom() fiber.Handler {
+// createRoom is the handler for the create room path
+func (h *handler) createRoom() fiber.Handler {
 	return func(f *fiber.Ctx) error {
 		// Serialize the body
 		var request dto.CreateRoomReqDTO
@@ -61,8 +61,8 @@ func (h *handler) CreateRoom() fiber.Handler {
 	}
 }
 
-// QueryRooms is the handler for the query rooms path
-func (h *handler) QueryRooms() fiber.Handler {
+// queryRooms is the handler for the query rooms path
+func (h *handler) queryRooms() fiber.Handler {
 	return func(f *fiber.Ctx) error {
 		// Serialize the body
 		var request = &dto.QueryRoomsReqDTO{

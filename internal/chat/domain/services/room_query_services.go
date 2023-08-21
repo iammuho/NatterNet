@@ -12,6 +12,7 @@ import (
 
 type RoomQueryDomainServices interface {
 	QueryRooms(*dto.QueryRoomsReqDTO) ([]*values.RoomValue, *errorhandler.Response)
+	GetRoomByID(string) (*values.RoomValue, *errorhandler.Response)
 }
 
 type roomQueryDomainServices struct {
@@ -29,4 +30,9 @@ func NewRoomQueryDomainServices(ctx context.AppContext, roomRepository repositor
 // CreateRoom creates a new room
 func (r *roomQueryDomainServices) QueryRooms(req *dto.QueryRoomsReqDTO) ([]*values.RoomValue, *errorhandler.Response) {
 	return r.roomRepository.QueryRooms(req)
+}
+
+// GetRoomByID gets a room by id
+func (r *roomQueryDomainServices) GetRoomByID(id string) (*values.RoomValue, *errorhandler.Response) {
+	return r.roomRepository.GetRoomByID(id)
 }
