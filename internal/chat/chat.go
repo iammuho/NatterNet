@@ -11,6 +11,7 @@ import (
 type Application struct {
 	AppContext         context.AppContext
 	RoomCommandHandler application.RoomCommandHandler
+	RoomQueryHandler   application.RoomQueryHandler
 }
 
 // NewApplication initializes a new chat application context with the given app context.
@@ -20,14 +21,17 @@ func NewApplication(ctx context.AppContext) *Application {
 
 	// Setup the domain services
 	roomCommandDomainService := services.NewRoomCommandDomainServices(ctx, roomRepository)
+	roomQueryDomainService := services.NewRoomQueryDomainServices(ctx, roomRepository)
 
 	// Setup the command handlers
 	roomCommandHandler := application.NewRoomCommandHandler(ctx, roomCommandDomainService)
+	roomQueryHandler := application.NewRoomQueryHandler(ctx, roomQueryDomainService)
 
 	return &Application{
 		AppContext: ctx,
 
 		// Application layer
 		RoomCommandHandler: roomCommandHandler,
+		RoomQueryHandler:   roomQueryHandler,
 	}
 }

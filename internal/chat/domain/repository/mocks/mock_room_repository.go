@@ -7,6 +7,7 @@ package mockchatrepository
 import (
 	reflect "reflect"
 
+	dto "github.com/iammuho/natternet/internal/chat/application/dto"
 	values "github.com/iammuho/natternet/internal/chat/domain/values"
 	errorhandler "github.com/iammuho/natternet/pkg/errorhandler"
 	gomock "go.uber.org/mock/gomock"
@@ -47,4 +48,19 @@ func (m *MockRoomRepository) Create(room *values.RoomDBValue) *errorhandler.Resp
 func (mr *MockRoomRepositoryMockRecorder) Create(room interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockRoomRepository)(nil).Create), room)
+}
+
+// QueryRooms mocks base method.
+func (m *MockRoomRepository) QueryRooms(req *dto.QueryRoomsReqDTO) ([]*values.RoomValue, *errorhandler.Response) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "QueryRooms", req)
+	ret0, _ := ret[0].([]*values.RoomValue)
+	ret1, _ := ret[1].(*errorhandler.Response)
+	return ret0, ret1
+}
+
+// QueryRooms indicates an expected call of QueryRooms.
+func (mr *MockRoomRepositoryMockRecorder) QueryRooms(req interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryRooms", reflect.TypeOf((*MockRoomRepository)(nil).QueryRooms), req)
 }
