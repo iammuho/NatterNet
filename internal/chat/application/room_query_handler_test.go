@@ -14,7 +14,7 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func TestRoomQueryHandler_CreateRoom(t *testing.T) {
+func TestRoomQueryHandler_QueryRooms(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
