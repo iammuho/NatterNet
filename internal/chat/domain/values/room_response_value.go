@@ -15,7 +15,7 @@ type RoomValue struct {
 	Users  []entity.RoomUser `json:"users" bson:"users"`
 
 	// Last Message Fields
-	LastMessageID string     `json:"last_message_d" bson:"last_message_id"`
+	LastMessageID string     `json:"last_message_id" bson:"last_message_id"`
 	LastMessageAt *time.Time `json:"last_message_at" bson:"last_message_at"`
 
 	// Timestamps

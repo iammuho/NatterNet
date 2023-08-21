@@ -3,10 +3,7 @@ package http
 import (
 	"fmt"
 
-	"github.com/iammuho/natternet/internal/chat/application"
 	"github.com/iammuho/natternet/internal/chat/application/dto"
-	"github.com/iammuho/natternet/internal/chat/domain/services"
-	"github.com/iammuho/natternet/internal/chat/infrastructure/mongodb"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 
 	"github.com/go-playground/validator/v10"
@@ -21,7 +18,7 @@ func (h *handler) CreateRoom() fiber.Handler {
 		var request dto.CreateRoomReqDTO
 		err := f.BodyParser(&request)
 		if err != nil {
-			h.ctx.GetLogger().Logger.Warn(
+			h.application.AppContext.GetLogger().Logger.Warn(
 				errorhandler.RequestBodyParseErrorMessage,
 				zap.Error(err),
 			)
@@ -36,7 +33,7 @@ func (h *handler) CreateRoom() fiber.Handler {
 		// Validate the request
 		err = validate.Struct(request)
 		if err != nil {
-			h.ctx.GetLogger().Logger.Warn(
+			h.application.AppContext.GetLogger().Logger.Warn(
 				errorhandler.ValidationErrorMessage,
 				zap.Error(err),
 			)
@@ -48,20 +45,11 @@ func (h *handler) CreateRoom() fiber.Handler {
 			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
 		}
 
-		// Initialize the room repository
-		roomRepository := mongodb.NewRoomRepository(h.ctx)
-
-		// Initialize the room command domain services
-		roomCommandDomainServices := services.NewRoomCommandDomainServices(h.ctx, roomRepository)
-
-		// Setup the command handlers
-		roomCommandHandler := application.NewRoomCommandHandler(h.ctx, roomCommandDomainServices)
-
 		// Handle the request
-		res, resErr := roomCommandHandler.CreateRoom(&request)
+		res, resErr := h.application.RoomCommandHandler.CreateRoom(&request)
 
 		if resErr != nil {
-			h.ctx.GetLogger().Logger.Warn(
+			h.application.AppContext.GetLogger().Logger.Warn(
 				errorhandler.InvalidCredentialsMessage,
 				zap.Error(err),
 			)

@@ -53,7 +53,6 @@ func TestRoomCommandDomainServices_CreateRoom(t *testing.T) {
 					Description: "This is a test room",
 				},
 				Config: entity.RoomConfig{
-					MaxUsers: 2,
 					RoomType: "group",
 				},
 				Users: []entity.RoomUser{

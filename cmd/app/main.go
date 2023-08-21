@@ -9,6 +9,7 @@ import (
 
 	"github.com/iammuho/natternet/cmd/app/config"
 	"github.com/iammuho/natternet/cmd/app/context"
+	"github.com/iammuho/natternet/internal/chat"
 	chatH "github.com/iammuho/natternet/internal/chat/interfaces/http"
 	"github.com/iammuho/natternet/internal/user"
 	userH "github.com/iammuho/natternet/internal/user/interfaces/http"
@@ -87,12 +88,13 @@ func main() {
 			})
 
 			// Setup the user context
-			userCtx := user.NewApplication(ctx)
-			userHandler := userH.NewUserHandler(userCtx)
+			userApp := user.NewApplication(ctx)
+			userHandler := userH.NewUserHandler(userApp)
 			userHandler.RegisterRoutes(v1)
 
 			// Chat Handlers
-			chatHandler := chatH.NewChatHandler(ctx)
+			chatApp := chat.NewApplication(ctx)
+			chatHandler := chatH.NewChatHandler(chatApp)
 			chatHandler.RegisterRoutes(v1)
 		}
 	}

@@ -8,13 +8,7 @@ const (
 )
 
 type RoomConfig struct {
-	MaxUsers int      `json:"max_users" bson:"max_users"`
 	RoomType RoomType `json:"room_type" bson:"room_type"`
-}
-
-// SetMaxUsers sets the max number of users in a room
-func (rc *RoomConfig) SetMaxUsers(maxUsers int) {
-	rc.MaxUsers = maxUsers
 }
 
 // SetRoomType sets the room type
@@ -27,7 +21,6 @@ func (rc *RoomConfig) SetRoomType(roomType RoomType) {
 func NewRoomConfig(roomType RoomType) *RoomConfig {
 	roomConfig := &RoomConfig{}
 
-	roomConfig.SetMaxUsers(2)
 	roomConfig.SetRoomType(roomType)
 
 	return roomConfig
