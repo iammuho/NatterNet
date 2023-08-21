@@ -19,6 +19,26 @@ const (
 	MessageTypeLink MessageType = "link"
 )
 
+// IsValidMessageType checks if the message type is valid
+func IsValidMessageType(messageType string) bool {
+	switch messageType {
+	case string(MessageTypeText):
+		return true
+	case string(MessageTypeImage):
+		return true
+	case string(MessageTypeVideo):
+		return true
+	case string(MessageTypeAudio):
+		return true
+	case string(MessageTypeFile):
+		return true
+	case string(MessageTypeLink):
+		return true
+	default:
+		return false
+	}
+}
+
 // Message is a struct that represents a message in a room
 type Message struct {
 	id string

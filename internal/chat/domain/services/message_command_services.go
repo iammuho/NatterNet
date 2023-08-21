@@ -52,6 +52,11 @@ func (r *messageCommandDomainServices) CreateMessage(req *dto.CreateMessageReqDT
 		return nil, &errorhandler.Response{Code: errorhandler.UserIsNotInRoomCode, Message: errorhandler.UserIsNotInRoomMessage, StatusCode: fiber.StatusForbidden}
 	}
 
+	// Check if message type is valid
+	if !entity.IsValidMessageType(req.MessageType) {
+		return nil, &errorhandler.Response{Code: errorhandler.InvalidMessageTypeCode, Message: errorhandler.InvalidMessageTypeMessage, StatusCode: fiber.StatusBadRequest}
+	}
+
 	// Create a user entity
 	uuid := r.ctx.GetUUID().NewUUID()
 	createdAt := r.ctx.GetTimer().Now()

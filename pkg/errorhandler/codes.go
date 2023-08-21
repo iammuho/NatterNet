@@ -21,8 +21,9 @@ const (
 	UserNotFoundErrorCode = 200
 
 	// Chat related error codes
-	RoomNotFoundErrorCode = 300
-	UserIsNotInRoomCode   = 301
+	RoomNotFoundErrorCode  = 300
+	UserIsNotInRoomCode    = 301
+	InvalidMessageTypeCode = 302
 )
 
 // Error messages
@@ -43,6 +44,7 @@ const (
 	UserNotFoundMessage = "User not found"
 
 	// Chat related error messages
-	RoomNotFoundMessage    = "Room not found"
-	UserIsNotInRoomMessage = "User is not in room"
+	RoomNotFoundMessage       = "Room not found"
+	UserIsNotInRoomMessage    = "User is not in room"
+	InvalidMessageTypeMessage = "Invalid message type"
 )
