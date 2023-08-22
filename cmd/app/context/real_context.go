@@ -7,6 +7,7 @@ import (
 	"github.com/iammuho/natternet/pkg/jwt"
 	"github.com/iammuho/natternet/pkg/logger"
 	"github.com/iammuho/natternet/pkg/mongodb"
+	"github.com/iammuho/natternet/pkg/nats"
 	"github.com/iammuho/natternet/pkg/utils"
 )
 
@@ -16,11 +17,12 @@ type appContext struct {
 	jwt            jwt.JwtContext
 	mongoContext   mongodb.MongoDBContext
 	hashingFactory hashing.HashingFactory
+	natsContext    nats.NatsContext
 	UUID           utils.UUID
 	Timer          utils.Timer
 }
 
-func NewAppContext(logger *logger.Logger, jwt jwt.JwtContext, mongoContext mongodb.MongoDBContext) AppContext {
+func NewAppContext(logger *logger.Logger, jwt jwt.JwtContext, mongoContext mongodb.MongoDBContext, natsContext nats.NatsContext) AppContext {
 	ctx := context.Background()
 
 	// Set the UUID
@@ -38,6 +40,7 @@ func NewAppContext(logger *logger.Logger, jwt jwt.JwtContext, mongoContext mongo
 		jwt:            jwt,
 		mongoContext:   mongoContext,
 		hashingFactory: hashingFactory,
+		natsContext:    natsContext,
 		UUID:           uuid,
 		Timer:          timer,
 	}
@@ -69,4 +72,8 @@ func (c *appContext) GetTimer() utils.Timer {
 
 func (c *appContext) GetHashingFactory() hashing.HashingFactory {
 	return c.hashingFactory
+}
+
+func (c *appContext) GetNatsContext() nats.NatsContext {
+	return c.natsContext
 }

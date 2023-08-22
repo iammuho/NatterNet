@@ -79,3 +79,17 @@ func (mr *MockRoomRepositoryMockRecorder) QueryRooms(req interface{}) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryRooms", reflect.TypeOf((*MockRoomRepository)(nil).QueryRooms), req)
 }
+
+// Update mocks base method.
+func (m *MockRoomRepository) Update(room *values.RoomDBValue) *errorhandler.Response {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", room)
+	ret0, _ := ret[0].(*errorhandler.Response)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockRoomRepositoryMockRecorder) Update(room interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRoomRepository)(nil).Update), room)
+}

@@ -12,6 +12,7 @@ import (
 	jwt "github.com/iammuho/natternet/pkg/jwt"
 	logger "github.com/iammuho/natternet/pkg/logger"
 	mongodb "github.com/iammuho/natternet/pkg/mongodb"
+	nats "github.com/iammuho/natternet/pkg/nats"
 	utils "github.com/iammuho/natternet/pkg/utils"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -107,6 +108,20 @@ func (m *MockAppContext) GetMongoContext() mongodb.MongoDBContext {
 func (mr *MockAppContextMockRecorder) GetMongoContext() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMongoContext", reflect.TypeOf((*MockAppContext)(nil).GetMongoContext))
+}
+
+// GetNatsContext mocks base method.
+func (m *MockAppContext) GetNatsContext() nats.NatsContext {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetNatsContext")
+	ret0, _ := ret[0].(nats.NatsContext)
+	return ret0
+}
+
+// GetNatsContext indicates an expected call of GetNatsContext.
+func (mr *MockAppContextMockRecorder) GetNatsContext() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNatsContext", reflect.TypeOf((*MockAppContext)(nil).GetNatsContext))
 }
 
 // GetTimer mocks base method.

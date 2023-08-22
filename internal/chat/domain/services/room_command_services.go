@@ -3,6 +3,7 @@ package services
 //go:generate mockgen -destination=mocks/mock_room_command_services.go -package=mockchatdomainservices -source=room_command_services.go
 
 import (
+	"github.com/gofiber/fiber/v2"
 	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/chat/application/dto"
 	"github.com/iammuho/natternet/internal/chat/domain/entity"
@@ -13,6 +14,7 @@ import (
 
 type RoomCommandDomainServices interface {
 	CreateRoom(*dto.CreateRoomReqDTO) (*values.RoomValue, *errorhandler.Response)
+	UpdateLastMessage(string, *values.MessageValue) *errorhandler.Response
 }
 
 type roomCommandDomainServices struct {
@@ -55,4 +57,29 @@ func (r *roomCommandDomainServices) CreateRoom(req *dto.CreateRoomReqDTO) (*valu
 	}
 
 	return values.NewRoomValueFromRoom(roomEntity), nil
+}
+
+// UpdateLastMessage updates the last message of the room
+func (r *roomCommandDomainServices) UpdateLastMessage(roomID string, message *values.MessageValue) *errorhandler.Response {
+	// Query the room
+	room, err := r.roomRepository.GetRoomByID(roomID)
+
+	if err != nil {
+		return err
+	}
+
+	if room == nil {
+		return &errorhandler.Response{Code: errorhandler.RoomNotFoundErrorCode, Message: errorhandler.RoomNotFoundMessage, StatusCode: fiber.StatusNotFound}
+	}
+
+	// Convert the room to entity
+	roomEntity := room.ToRoom()
+
+	// Update the last message
+	now := r.ctx.GetTimer().Now()
+	roomEntity.SetLastMessage(message.ID)
+	roomEntity.SetUpdatedAt(&now)
+
+	// Update the room
+	return r.roomRepository.Update(values.NewRoomDBValue(roomEntity))
 }

@@ -17,6 +17,7 @@ import (
 	"github.com/iammuho/natternet/pkg/jwt"
 	"github.com/iammuho/natternet/pkg/logger"
 	"github.com/iammuho/natternet/pkg/mongodb"
+	"github.com/iammuho/natternet/pkg/nats"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -71,8 +72,18 @@ func main() {
 		l.Panic("MongoDB Client failed to connect: %v", zap.Error(err))
 	}
 
+	// Add the nats
+	l.Info("Creating NATS Client")
+	natsContext, err := nats.NewNats(
+		nats.WithNatsURL(config.Config.Nats.URL),
+	)
+
+	if err != nil {
+		l.Panic("NATS Client failed to connect: %v", zap.Error(err))
+	}
+
 	// Create the app context
-	ctx := context.NewAppContext(l, jwtContext, mongodbContext)
+	ctx := context.NewAppContext(l, jwtContext, mongodbContext, natsContext)
 
 	// Register the routes
 	v1 := httpServer.App.Group("/api/v1")

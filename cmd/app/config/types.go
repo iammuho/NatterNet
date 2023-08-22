@@ -50,4 +50,9 @@ type config struct {
 		Issuer         string `env:"JWT_ISSUER" envDefault:"natternet"`
 		Subject        string `env:"JWT_SUBJECT" envDefault:"natternet"`
 	}
+
+	// Nats provides the Nats configuration.
+	Nats struct {
+		URL string `env:"NATS_URL" envDefault:"nats://localhost:4222"`
+	}
 }

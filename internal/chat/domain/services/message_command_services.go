@@ -3,6 +3,8 @@ package services
 //go:generate mockgen -destination=mocks/mock_message_command_services.go -package=mockchatdomainservices -source=message_command_services.go
 
 import (
+	"encoding/json"
+
 	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/chat/application/dto"
 	"github.com/iammuho/natternet/internal/chat/domain/entity"
@@ -18,16 +20,18 @@ type MessageCommandDomainServices interface {
 }
 
 type messageCommandDomainServices struct {
-	ctx                     context.AppContext
-	messageRepository       repository.MessageRepository
-	roomQueryDomainServices RoomQueryDomainServices
+	ctx                       context.AppContext
+	messageRepository         repository.MessageRepository
+	roomQueryDomainServices   RoomQueryDomainServices
+	roomCommandDomainServices RoomCommandDomainServices
 }
 
-func NewMessageCommandDomainServices(ctx context.AppContext, messageRepository repository.MessageRepository, roomQueryDomainServices RoomQueryDomainServices) MessageCommandDomainServices {
+func NewMessageCommandDomainServices(ctx context.AppContext, messageRepository repository.MessageRepository, roomQueryDomainServices RoomQueryDomainServices, roomCoomroomCommandDomainServices RoomCommandDomainServices) MessageCommandDomainServices {
 	return &messageCommandDomainServices{
-		ctx:                     ctx,
-		messageRepository:       messageRepository,
-		roomQueryDomainServices: roomQueryDomainServices,
+		ctx:                       ctx,
+		messageRepository:         messageRepository,
+		roomQueryDomainServices:   roomQueryDomainServices,
+		roomCommandDomainServices: roomCoomroomCommandDomainServices,
 	}
 }
 
@@ -67,6 +71,14 @@ func (r *messageCommandDomainServices) CreateMessage(req *dto.CreateMessageReqDT
 	// Create the message
 	if err := r.messageRepository.Create(values.NewMessageDBValueFromMessage(messageEntity)); err != nil {
 		return nil, err
+	}
+
+	// publish to nats
+	messageJSON, _ := json.Marshal(values.NewMessageValueFromMessage(messageEntity))
+	_, publishErr := r.ctx.GetNatsContext().GetJetStreamContext().Publish("ROOM.MESSAGE_CREATED", messageJSON)
+
+	if publishErr != nil {
+		r.ctx.GetLogger().Error(publishErr.Error())
 	}
 
 	return values.NewMessageValueFromMessage(messageEntity), nil

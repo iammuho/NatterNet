@@ -11,6 +11,7 @@ import (
 type RoomRepository interface {
 	// Commands
 	Create(room *values.RoomDBValue) *errorhandler.Response
+	Update(room *values.RoomDBValue) *errorhandler.Response
 
 	// Queries
 	QueryRooms(req *dto.QueryRoomsReqDTO) ([]*values.RoomValue, *errorhandler.Response)

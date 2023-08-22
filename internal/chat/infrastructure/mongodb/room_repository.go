@@ -112,3 +112,17 @@ func (u *roomRepository) GetRoomByID(id string) (*values.RoomValue, *errorhandle
 
 	return &room, nil
 }
+
+// Update updates a room
+func (u *roomRepository) Update(room *values.RoomDBValue) *errorhandler.Response {
+	ctx := u.ctx.GetContext()
+
+	collection := u.ctx.GetMongoContext().GetDatabase().Collection("rooms")
+
+	// Query
+	if _, err := collection.UpdateOne(ctx, bson.D{{Key: "_id", Value: room.ID}}, bson.D{{Key: "$set", Value: room}}); err != nil {
+		return &errorhandler.Response{Code: errorhandler.DatabaseErrorCode, Message: err.Error()}
+	}
+
+	return nil
+}

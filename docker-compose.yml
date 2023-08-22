@@ -3,6 +3,18 @@
 #########
 version: "3.2"
 services:
+  nats:
+    container_name: nats-jetstream-server
+    hostname: nats-jetstream-server
+    image: "nats:latest"
+    command: "--debug -js -sd /data"
+    ports:
+      - "4222:4222"
+    restart: unless-stopped
+    networks:
+      - natternet
+    volumes:
+      - ./jetstream-data:/data
   sonarqube:
     image: sonarqube:community
     hostname: sonarqube

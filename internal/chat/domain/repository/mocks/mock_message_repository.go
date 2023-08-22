@@ -7,6 +7,7 @@ package mockchatrepository
 import (
 	reflect "reflect"
 
+	dto "github.com/iammuho/natternet/internal/chat/application/dto"
 	values "github.com/iammuho/natternet/internal/chat/domain/values"
 	errorhandler "github.com/iammuho/natternet/pkg/errorhandler"
 	gomock "go.uber.org/mock/gomock"
@@ -47,4 +48,19 @@ func (m *MockMessageRepository) Create(message *values.MessageDBValue) *errorhan
 func (mr *MockMessageRepositoryMockRecorder) Create(message interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockMessageRepository)(nil).Create), message)
+}
+
+// Query mocks base method.
+func (m *MockMessageRepository) Query(query *dto.QueryMessagesReqDTO) ([]*values.MessageValue, *errorhandler.Response) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Query", query)
+	ret0, _ := ret[0].([]*values.MessageValue)
+	ret1, _ := ret[1].(*errorhandler.Response)
+	return ret0, ret1
+}
+
+// Query indicates an expected call of Query.
+func (mr *MockMessageRepositoryMockRecorder) Query(query interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockMessageRepository)(nil).Query), query)
 }

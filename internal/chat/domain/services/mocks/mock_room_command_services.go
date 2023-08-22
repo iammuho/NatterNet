@@ -50,3 +50,17 @@ func (mr *MockRoomCommandDomainServicesMockRecorder) CreateRoom(arg0 interface{}
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRoom", reflect.TypeOf((*MockRoomCommandDomainServices)(nil).CreateRoom), arg0)
 }
+
+// UpdateLastMessage mocks base method.
+func (m *MockRoomCommandDomainServices) UpdateLastMessage(arg0 string, arg1 *values.MessageValue) *errorhandler.Response {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateLastMessage", arg0, arg1)
+	ret0, _ := ret[0].(*errorhandler.Response)
+	return ret0
+}
+
+// UpdateLastMessage indicates an expected call of UpdateLastMessage.
+func (mr *MockRoomCommandDomainServicesMockRecorder) UpdateLastMessage(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLastMessage", reflect.TypeOf((*MockRoomCommandDomainServices)(nil).UpdateLastMessage), arg0, arg1)
+}
