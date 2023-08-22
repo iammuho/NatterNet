@@ -13,6 +13,7 @@ type Application struct {
 	RoomCommandHandler    application.RoomCommandHandler
 	RoomQueryHandler      application.RoomQueryHandler
 	MessageCommandHandler application.MessageCommandHandler
+	MessageQueryHandler   application.MessageQueryHandler
 }
 
 // NewApplication initializes a new chat application context with the given app context.
@@ -25,11 +26,15 @@ func NewApplication(ctx context.AppContext) *Application {
 	roomCommandDomainService := services.NewRoomCommandDomainServices(ctx, roomRepository)
 	roomQueryDomainService := services.NewRoomQueryDomainServices(ctx, roomRepository)
 	messageCommandServices := services.NewMessageCommandDomainServices(ctx, messageRepository, roomQueryDomainService)
+	messageQueryServices := services.NewMessageQueryDomainServices(ctx, messageRepository, roomQueryDomainService)
 
 	// Setup the command handlers
 	roomCommandHandler := application.NewRoomCommandHandler(ctx, roomCommandDomainService)
-	roomQueryHandler := application.NewRoomQueryHandler(ctx, roomQueryDomainService)
 	messageCommandHandler := application.NewMessageCommandHandler(ctx, messageCommandServices)
+
+	// Setup the query handlers
+	roomQueryHandler := application.NewRoomQueryHandler(ctx, roomQueryDomainService)
+	messageQueryHandler := application.NewMessageQueryHandler(ctx, messageQueryServices)
 
 	return &Application{
 		AppContext: ctx,
@@ -38,5 +43,6 @@ func NewApplication(ctx context.AppContext) *Application {
 		RoomCommandHandler:    roomCommandHandler,
 		RoomQueryHandler:      roomQueryHandler,
 		MessageCommandHandler: messageCommandHandler,
+		MessageQueryHandler:   messageQueryHandler,
 	}
 }

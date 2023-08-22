@@ -22,12 +22,12 @@ func NewChatHandler(application *chat.Application) *handler {
 func (h *handler) RegisterRoutes(f fiber.Router) {
 	middleware := http.NewMiddleware(h.application.AppContext)
 
-	// Create the chat
 	chat := f.Group("/chat", middleware.Protected())
 	{
 		chat.Post("/room", h.createRoom())
 		chat.Get("/rooms", h.queryRooms())
 		chat.Post("/room/:roomID/message", h.createMessage())
+		chat.Get("/room/:roomID/messages", h.queryMessages())
 	}
 
 }
