@@ -19,13 +19,13 @@ type roomEvent struct {
 }
 
 func NewRoomEventHandler(ctx context.AppContext, roomCommandDomainService services.RoomCommandDomainServices) {
-	// Create the stream
-	ctx.GetNatsContext().CreateStream(streamName, streamSubjects)
-
 	r := &roomEvent{
 		ctx:                      ctx,
 		roomCommandDomainService: roomCommandDomainService,
 	}
+
+	// Create the stream
+	ctx.GetNatsContext().CreateStream(streamName, streamSubjects)
 
 	// Subscribe to the stream
 	ctx.GetNatsContext().Subscribe(streamSubjects, r.handleMessageCreated)
