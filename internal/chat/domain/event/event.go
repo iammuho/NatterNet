@@ -2,15 +2,8 @@ package event
 
 import (
 	"github.com/iammuho/natternet/cmd/app/context"
+	"github.com/iammuho/natternet/internal/chat/domain/event/types"
 	"github.com/iammuho/natternet/internal/chat/domain/services"
-)
-
-const (
-	streamName     = "ROOM"
-	streamSubjects = "ROOM.*"
-
-	// event types
-	MessageCreatedEvent = "ROOM.MESSAGE_CREATED"
 )
 
 type roomEvent struct {
@@ -25,8 +18,8 @@ func NewRoomEventHandler(ctx context.AppContext, roomCommandDomainService servic
 	}
 
 	// Create the stream
-	ctx.GetNatsContext().CreateStream(streamName, streamSubjects)
+	ctx.GetNatsContext().CreateStream(types.StreamName, types.StreamSubjects)
 
 	// Subscribe to the stream
-	ctx.GetNatsContext().Subscribe(streamSubjects, r.handleMessageCreated)
+	ctx.GetNatsContext().Subscribe(types.MessageCreatedEvent, r.handleMessageCreated)
 }

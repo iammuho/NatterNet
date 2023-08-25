@@ -8,6 +8,7 @@ import (
 	"github.com/iammuho/natternet/cmd/app/context"
 	"github.com/iammuho/natternet/internal/chat/application/dto"
 	"github.com/iammuho/natternet/internal/chat/domain/entity"
+	"github.com/iammuho/natternet/internal/chat/domain/event/types"
 	"github.com/iammuho/natternet/internal/chat/domain/repository"
 	"github.com/iammuho/natternet/internal/chat/domain/values"
 	"github.com/iammuho/natternet/pkg/errorhandler"
@@ -75,7 +76,7 @@ func (r *messageCommandDomainServices) CreateMessage(req *dto.CreateMessageReqDT
 
 	// publish to nats
 	messageJSON, _ := json.Marshal(values.NewMessageValueFromMessage(messageEntity))
-	_, publishErr := r.ctx.GetNatsContext().GetJetStreamContext().Publish("ROOM.MESSAGE_CREATED", messageJSON)
+	_, publishErr := r.ctx.GetNatsContext().GetJetStreamContext().Publish(types.MessageCreatedEvent, messageJSON)
 
 	if publishErr != nil {
 		r.ctx.GetLogger().Error(publishErr.Error())
