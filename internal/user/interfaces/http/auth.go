@@ -12,6 +12,15 @@ import (
 )
 
 // Signin is the handler for the signin route
+// @Summary Sign in
+// @Description Authenticates a user based on provided login and password.
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param body body dto.SignInReqDTO true "Signin data"
+// @Success 200 {object} jwt.JWTResponse "Successfully authenticated."
+// @Failure 401 {object} errorhandler.Response "Unauthorized: Invalid credentials."
+// @Router /auth/signin [post]
 func (h *handler) Signin() fiber.Handler {
 	return func(f *fiber.Ctx) error {
 		// Serialize the body
@@ -59,7 +68,16 @@ func (h *handler) Signin() fiber.Handler {
 	}
 }
 
-// Signup is the handler for the signup route
+// Signup handles user registration.
+// @Summary Register a new user
+// @Description Registers a new user.
+// @Tags Authentication
+// @Accept  json
+// @Produce  json
+// @Param input body dto.SignupReqDTO true "Sign Up Info"
+// @Success 200 {object} jwt.JWTResponse ""
+// @Failure 400 {object} errorhandler.Response
+// @Router /auth/signup [post]
 func (h *handler) Signup() fiber.Handler {
 	return func(f *fiber.Ctx) error {
 		// Serialize the body

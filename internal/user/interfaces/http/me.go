@@ -11,7 +11,16 @@ import (
 	"go.uber.org/zap"
 )
 
-// Me is the handler for the me route to get the user's own information
+// Me returns the authenticated user's details.
+// @Summary User's own details
+// @Description Get the authenticated user's own details.
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Success 200 {object} values.UserValue
+// @Failure 400 {object} errorhandler.Response
+// @Router /user/me [get]
 func (h *handler) Me() fiber.Handler {
 	return func(f *fiber.Ctx) error {
 		// Serialize the body

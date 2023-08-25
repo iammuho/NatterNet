@@ -21,9 +21,20 @@ import (
 	"github.com/iammuho/natternet/pkg/nats"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
+	_ "github.com/iammuho/natternet/docs"
 	"go.uber.org/zap"
 )
 
+// @title NatterNet API
+// @version 1.0
+// @description NatterNet Chat API Documentation
+// @contact.name NatterNet API Support
+// @contact.email muhammet.arsln@gmail.com
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @host localhost:8080
+// @BasePath /api/v1/
 func main() {
 	// Add the logger
 	l, err := logger.NewLogger(
@@ -98,6 +109,21 @@ func main() {
 					"status": "ok",
 				})
 			})
+
+			v1.Get("/swagger/*", swagger.HandlerDefault)
+			v1.Get("/swagger/*", swagger.New(swagger.Config{ // custom
+				URL:         "http://example.com/doc.json",
+				DeepLinking: false,
+				// Expand ("list") or Collapse ("none") tag groups by default
+				DocExpansion: "none",
+				// Prefill OAuth ClientId on Authorize popup
+				OAuth: &swagger.OAuthConfig{
+					AppName:  "OAuth Provider",
+					ClientId: "21bb4edc-05a7-4afc-86f1-2e151e4ba6e2",
+				},
+				// Ability to change OAuth2 redirect uri location
+				OAuth2RedirectUrl: "http://localhost:8080/swagger/oauth2-redirect.html",
+			}))
 
 			// Setup the user context
 			userApp := user.NewApplication(ctx)

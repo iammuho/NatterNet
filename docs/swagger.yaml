@@ -1,0 +1,171 @@
+basePath: /api/v1/
+definitions:
+  dto.SignInReqDTO:
+    properties:
+      login:
+        description: |-
+          The login of the user. It must be alphanumeric and have a length between 3 and 100.
+          required: true
+          example: john_doe
+        maxLength: 100
+        minLength: 3
+        type: string
+      password:
+        description: |-
+          The password of the user. It must have a length between 8 and 32.
+          required: true
+          example: securePassword123
+        maxLength: 32
+        minLength: 8
+        type: string
+    required:
+    - login
+    - password
+    type: object
+  dto.SignupReqDTO:
+    properties:
+      email:
+        description: |-
+          The email address of the user. It must be a valid email format.
+          required: true
+          example: john.doe@example.com
+        type: string
+      password:
+        description: |-
+          The desired password for the user. It must have a length between 8 and 32.
+          required: true
+          example: securePassword123
+        maxLength: 32
+        minLength: 8
+        type: string
+      username:
+        description: |-
+          The desired username for the user. It must be alphanumeric and have a length between 3 and 20.
+          required: true
+          example: john_doe
+        maxLength: 20
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  errorhandler.Response:
+    properties:
+      code:
+        type: integer
+      message: {}
+      status_code:
+        type: integer
+    type: object
+  jwt.JWTResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      refresh_token:
+        type: string
+    type: object
+  values.UserValue:
+    properties:
+      created_at:
+        description: Timestamps
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      username:
+        description: Account information
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: muhammet.arsln@gmail.com
+    name: NatterNet API Support
+  description: NatterNet Chat API Documentation
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: NatterNet API
+  version: "1.0"
+paths:
+  /auth/signin:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user based on provided login and password.
+      parameters:
+      - description: Signin data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignInReqDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully authenticated.
+          schema:
+            $ref: '#/definitions/jwt.JWTResponse'
+        "401":
+          description: 'Unauthorized: Invalid credentials.'
+          schema:
+            $ref: '#/definitions/errorhandler.Response'
+      summary: Sign in
+      tags:
+      - Authentication
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Registers a new user.
+      parameters:
+      - description: Sign Up Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignupReqDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/jwt.JWTResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errorhandler.Response'
+      summary: Register a new user
+      tags:
+      - Authentication
+  /user/me:
+    get:
+      consumes:
+      - application/json
+      description: Get the authenticated user's own details.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/values.UserValue'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errorhandler.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: User's own details
+      tags:
+      - users
+swagger: "2.0"

@@ -7,8 +7,7 @@ Your real-time chat application built with Golang, MongoDB, WebSockets, and Fast
 1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Local Development](#local-development)
-4. [Endpoints](#endpoints)
-5. [License](#license)
+4. [License](#license)
 
 ## Introduction
 
@@ -135,28 +134,6 @@ This section provides a guide to set up NatterNet for local development using Do
    ```sh
    docker-compose -p natternet build
    ```
-
-## Endpoints
-
-# User API Endpoints
-
-| Endpoint         | Method | Description               | JSON Request Body                                                      |
-|------------------|--------|---------------------------|------------------------------------------------------------------------|
-| `api/v1/auth/signin` | POST   | Sign in to the platform   | ```json { "login": "exampleLogin", "password": "examplePassword1234" } ``` |
-| `api/v1/auth/signup` | POST   | Sign up for the platform  | ```json { "email": "example@email.com", "username": "exampleUser", "password": "examplePassword1234" } ``` |
-| `api/v1/user/me`     | GET    | Get the authenticated user's information | *No JSON body required for this endpoint* |
-
-# Chat API Endpoints
-
-| Endpoint                        | Method | Description                                      | JSON Request Body                                                                                              |
-|---------------------------------|--------|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
-| `api/v1/chat/room`              | POST   | Create a new chat room                           | ```json { "name": "Example Room", "description": "Description here", "is_group": true, "user_ids": ["userID123", "userID456"] } ```                |
-| `api/v1/chat/rooms`             | GET    | Query chat rooms                                 | ```json { "UserIn": ["userID123"], "UserNotIn": [], "page": 1, "per_page": 20, "sort_field": "someField", "sort_order": "asc" } ```                                        |
-| `api/v1/chat/room/:roomID/message` | POST   | Send a message to a chat room                    | ```json {"content": "Hello, World!", "message_type": "text" } ```                                                        |
-| `api/v1/chat/room/:roomID/messages`| GET    | Get messages from a specific chat room           | ```json { "page": 1, "per_page": 20, "sort_field": "timestamp", "sort_order": "desc" } ```                                    |
-
-
-
 
 ## License
 
