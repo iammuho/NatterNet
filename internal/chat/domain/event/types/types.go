@@ -1,9 +1,8 @@
 package types
 
-const (
-	StreamName     = "ROOM"
-	StreamSubjects = "ROOM.*"
-)
+// Stream consts
+const StreamName = "ROOM"
+const StreamSubjects = "ROOM.*"
 
 // Event Types
 const RoomCreatedEvent = "ROOM.CREATED"
