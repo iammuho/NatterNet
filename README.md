@@ -141,7 +141,7 @@ You can access the API documentation through Swagger at the following endpoint a
 
 [http://localhost:8080/api/v1/swagger/](http://localhost:8080/api/v1/swagger/)
 
-Tip: Before delving into the documentation, ensure to execute make swagger at the project root. This step regenerates essential Swagger components, keeping the docs updated.
+Tip: Before delving into the documentation, ensure to execute `make swagger` at the project root. This step regenerates essential Swagger components, keeping the docs updated.
 
 ## License
 
