@@ -7,7 +7,8 @@ Your real-time chat application built with Golang, MongoDB, WebSockets, and Fast
 1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Local Development](#local-development)
-4. [License](#license)
+4. [API Documentation](#api-documentation-with-swagger)
+5. [License](#license)
 
 ## Introduction
 
@@ -134,6 +135,13 @@ This section provides a guide to set up NatterNet for local development using Do
    ```sh
    docker-compose -p natternet build
    ```
+## API Documentation with Swagger
+
+You can access the API documentation through Swagger at the following endpoint after starting the application:
+
+[http://localhost:8080/api/v1/swagger/](http://localhost:8080/api/v1/swagger/)
+
+Tip: Before delving into the documentation, ensure to execute make swagger at the project root. This step regenerates essential Swagger components, keeping the docs updated.
 
 ## License
 
