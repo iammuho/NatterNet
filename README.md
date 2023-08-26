@@ -18,15 +18,15 @@ NatterNet is a fast and lightweight chat WebSocket service built with Golang, Mo
 
 Our plan for the next iterations of NatterNet is outlined below. We welcome contributions that align with this roadmap!
 
-- [ ] **Private Chats (1-1)**
+- [x] **Private Chats (1-1)**
   - Enable direct, private chat between two users
   
-- [ ] **Group Chats**
+- [x] **Group Chats**
   - Allow users to create and participate in group chats
   - Admin/Moderation features in groups
   
 - [ ] **Different Message Formats**
-  - [ ] **Text Messages**
+  - [x] **Text Messages**
     - Support for plain text messages
     - Emoji support
   - [ ] **Images**
