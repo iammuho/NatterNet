@@ -11,7 +11,18 @@ import (
 	"go.uber.org/zap"
 )
 
-// createMessage  is the handler for creating a message
+// createMessage creates a new message in a specified chat room.
+// @Summary Create a new message
+// @Description Creates a new message within the specified chat room.
+// @Tags Message
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param   roomID path string true "ID of the chat room"
+// @Param   message body dto.CreateMessageReqDTO true "Message details"
+// @Success 201 {object} values.MessageValue
+// @Failure 400 {object} errorhandler.Response
+// @Router /chat/rooms/{roomID}/messages [post]
 func (h *handler) createMessage() fiber.Handler {
 	return func(f *fiber.Ctx) error {
 		// Serialize the body
@@ -62,7 +73,19 @@ func (h *handler) createMessage() fiber.Handler {
 	}
 }
 
-// queryMessages is the handler for querying messages
+// @Summary Query messages for a specific room.
+// @Description Retrieve messages for a room, with optional pagination and sorting.
+// @Tags Message
+// @Accept json
+// @Produce json
+// @Param roomID path string true "ID of the Room"
+// @Param page query int false "Page number for pagination. Defaults to 1."
+// @Param per_page query int false "Number of messages per page for pagination. Defaults to 10."
+// @Param sort_field query string false "Field to sort by. Defaults to created_at."
+// @Param sort_order query string false "Order of sorting (asc/desc). Defaults to desc."
+// @Success 200 {object} []values.MessageValue
+// @Failure 400 {object} errorhandler.Response
+// @Router /rooms/{roomID}/messages [get]
 func (h *handler) queryMessages() fiber.Handler {
 	return func(f *fiber.Ctx) error {
 		// Serialize the body

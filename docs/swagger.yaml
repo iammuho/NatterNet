@@ -1,5 +1,35 @@
 basePath: /api/v1/
 definitions:
+  dto.CreateMessageReqDTO:
+    properties:
+      content:
+        type: string
+      message_type:
+        type: string
+    required:
+    - content
+    - message_type
+    type: object
+  dto.CreateRoomReqDTO:
+    properties:
+      description:
+        type: string
+      is_group:
+        description: Config
+        type: boolean
+      name:
+        description: Meta
+        type: string
+      owner:
+        description: Users
+        type: string
+      user_ids:
+        items:
+          type: string
+        type: array
+    required:
+    - owner
+    type: object
   dto.SignInReqDTO:
     properties:
       login:
@@ -51,6 +81,78 @@ definitions:
     - password
     - username
     type: object
+  entity.MessageType:
+    enum:
+    - text
+    - image
+    - video
+    - audio
+    - file
+    - link
+    type: string
+    x-enum-varnames:
+    - MessageTypeText
+    - MessageTypeImage
+    - MessageTypeVideo
+    - MessageTypeAudio
+    - MessageTypeFile
+    - MessageTypeLink
+  entity.RoomConfig:
+    properties:
+      room_type:
+        $ref: '#/definitions/entity.RoomType'
+    type: object
+  entity.RoomMeta:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  entity.RoomType:
+    enum:
+    - group
+    - private
+    type: string
+    x-enum-varnames:
+    - RoomTypeGroup
+    - RoomTypePrivate
+  entity.RoomUser:
+    properties:
+      created_at:
+        description: Timestamps
+        type: string
+      is_muted:
+        description: Booleans
+        type: boolean
+      role:
+        $ref: '#/definitions/entity.RoomUserRole'
+      status:
+        allOf:
+        - $ref: '#/definitions/entity.RoomUserStatus'
+        description: Status
+      updated_at:
+        type: string
+      user_id:
+        description: User Details
+        type: string
+    type: object
+  entity.RoomUserRole:
+    enum:
+    - admin
+    - member
+    type: string
+    x-enum-varnames:
+    - RoomUserRoleAdmin
+    - RoomUserRoleMember
+  entity.RoomUserStatus:
+    enum:
+    - active
+    - left
+    type: string
+    x-enum-varnames:
+    - RoomUserStatusActive
+    - RoomUserStatusLeft
   errorhandler.Response:
     properties:
       code:
@@ -67,6 +169,51 @@ definitions:
         type: integer
       refresh_token:
         type: string
+    type: object
+  values.MessageValue:
+    properties:
+      content:
+        description: Attributes
+        type: string
+      created_at:
+        description: Timestamps
+        type: string
+      id:
+        type: string
+      message_type:
+        $ref: '#/definitions/entity.MessageType'
+      room_id:
+        description: Relations
+        type: string
+      sender_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  values.RoomValue:
+    properties:
+      config:
+        $ref: '#/definitions/entity.RoomConfig'
+      created_at:
+        description: Timestamps
+        type: string
+      id:
+        type: string
+      last_message_at:
+        type: string
+      last_message_id:
+        description: Last Message Fields
+        type: string
+      meta:
+        allOf:
+        - $ref: '#/definitions/entity.RoomMeta'
+        description: Room Details
+      updated_at:
+        type: string
+      users:
+        items:
+          $ref: '#/definitions/entity.RoomUser'
+        type: array
     type: object
   values.UserValue:
     properties:
@@ -147,6 +294,167 @@ paths:
       summary: Register a new user
       tags:
       - Authentication
+  /chat/room:
+    post:
+      consumes:
+      - application/json
+      description: Allows authenticated users to create a new chat room.
+      parameters:
+      - description: Create Room
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateRoomReqDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/values.RoomValue'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errorhandler.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new chat room
+      tags:
+      - Room
+  /chat/rooms:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of chat rooms based on filters, sorting and pagination.
+      parameters:
+      - default: 1
+        description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: per_page
+        type: integer
+      - default: '"created_at"'
+        description: Field to sort by
+        in: query
+        name: sort_field
+        type: string
+      - default: '"desc"'
+        description: Order of sorting
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort_order
+        type: string
+      - description: Filter rooms where user is in
+        in: query
+        name: user_in
+        type: string
+      - description: Filter rooms where user is not in
+        in: query
+        name: user_not_in
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/values.RoomValue'
+              type: array
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errorhandler.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Query chat rooms
+      tags:
+      - Room
+  /chat/rooms/{roomID}/messages:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new message within the specified chat room.
+      parameters:
+      - description: ID of the chat room
+        in: path
+        name: roomID
+        required: true
+        type: string
+      - description: Message details
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateMessageReqDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/values.MessageValue'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errorhandler.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new message
+      tags:
+      - Message
+  /rooms/{roomID}/messages:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve messages for a room, with optional pagination and sorting.
+      parameters:
+      - description: ID of the Room
+        in: path
+        name: roomID
+        required: true
+        type: string
+      - description: Page number for pagination. Defaults to 1.
+        in: query
+        name: page
+        type: integer
+      - description: Number of messages per page for pagination. Defaults to 10.
+        in: query
+        name: per_page
+        type: integer
+      - description: Field to sort by. Defaults to created_at.
+        in: query
+        name: sort_field
+        type: string
+      - description: Order of sorting (asc/desc). Defaults to desc.
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/values.MessageValue'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errorhandler.Response'
+      summary: Query messages for a specific room.
+      tags:
+      - Message
   /user/me:
     get:
       consumes:
@@ -167,5 +475,5 @@ paths:
       - ApiKeyAuth: []
       summary: User's own details
       tags:
-      - users
+      - User
 swagger: "2.0"

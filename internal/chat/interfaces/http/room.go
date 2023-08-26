@@ -11,7 +11,17 @@ import (
 	"go.uber.org/zap"
 )
 
-// createRoom is the handler for the create room path
+// createRoom creates a new chat room.
+// @Summary Create a new chat room
+// @Description Allows authenticated users to create a new chat room.
+// @Tags Room
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param   body body dto.CreateRoomReqDTO true "Create Room"
+// @Success 200 {object} values.RoomValue
+// @Failure 400 {object} errorhandler.Response
+// @Router /chat/room [post]
 func (h *handler) createRoom() fiber.Handler {
 	return func(f *fiber.Ctx) error {
 		// Serialize the body
@@ -61,7 +71,22 @@ func (h *handler) createRoom() fiber.Handler {
 	}
 }
 
-// queryRooms is the handler for the query rooms path
+// queryRooms gets a list of chat rooms based on the provided criteria.
+// @Summary Query chat rooms
+// @Description Retrieves a list of chat rooms based on filters, sorting and pagination.
+// @Tags Room
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param   page query int false "Page number for pagination" default(1)
+// @Param   per_page query int false "Number of items per page" default(10)
+// @Param   sort_field query string false "Field to sort by" default("created_at")
+// @Param   sort_order query string false "Order of sorting" Enums(asc, desc) default("desc")
+// @Param   user_in query string false "Filter rooms where user is in"
+// @Param   user_not_in query string false "Filter rooms where user is not in"
+// @Success 200 {array} []values.RoomValue
+// @Failure 400 {object} errorhandler.Response
+// @Router /chat/rooms [get]
 func (h *handler) queryRooms() fiber.Handler {
 	return func(f *fiber.Ctx) error {
 		// Serialize the body

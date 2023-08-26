@@ -14,7 +14,7 @@ import (
 // Me returns the authenticated user's details.
 // @Summary User's own details
 // @Description Get the authenticated user's own details.
-// @Tags users
+// @Tags User
 // @Accept  json
 // @Produce  json
 // @Security ApiKeyAuth
