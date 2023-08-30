@@ -10,6 +10,18 @@ import (
 )
 
 func (h *handler) OnOpen(c *websocket.Conn) {
+	claims, err := h.application.AppContext.GetJwtContext().ParseJWT(h.accessToken)
+	if err != nil {
+		return
+	}
+
+	if claims == nil || claims["ID"] == nil {
+		return
+	}
+
+	c.SetUserValue("ID", claims["ID"].(string))
+	h.clients.Store(c.ID(), c)
+
 	// connection ID to string
 	connectionID := fmt.Sprintf("%d", c.ID())
 

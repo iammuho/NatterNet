@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/iammuho/natternet/internal/user"
-	"github.com/iammuho/natternet/pkg/errorhandler"
+	eventTypes "github.com/iammuho/natternet/internal/user/domain/event/types"
 
 	"github.com/dgrr/websocket"
 	"github.com/gofiber/fiber/v2"
@@ -13,10 +13,14 @@ import (
 type handler struct {
 	application *user.Application
 	clients     sync.Map
+	accessToken string
 }
 
 // NewWSHandler is the constructor for the ws handler
 func NewWSHandler(application *user.Application) *handler {
+	// Create the stream
+	application.AppContext.GetNatsContext().CreateStream(eventTypes.StreamName, eventTypes.StreamSubjects)
+
 	return &handler{
 		application: application,
 		clients:     sync.Map{},
@@ -29,30 +33,16 @@ func (h *handler) RegisterRoutes(f fiber.Router) {
 	wServer.HandleOpen(h.OnOpen)
 	wServer.HandleClose(h.OnClose)
 
+	// Setup the listeners
+	h.setupListeners()
+
 	// Create a path for the websocket authenticated connection /ws/:accessToken
 	f.Get("/ws/:accessToken", func(c *fiber.Ctx) error {
-		accessToken := c.Params("accessToken")
-
-		claims, err := h.application.AppContext.GetJwtContext().ParseJWT(accessToken)
-		if err != nil {
-			return h.sendErrorResponse(c, errorhandler.InvalidAccessTokenErrorCode, err.Message.(string))
-		}
-
-		if claims == nil || claims["ID"] == nil {
-			return h.sendErrorResponse(c, errorhandler.InvalidAccessTokenErrorCode, errorhandler.InvalidAccessTokenMessage)
-		}
+		h.accessToken = c.Params("accessToken")
 
 		ctx := c.Context()
 		wServer.Upgrade(ctx)
 
-		ctx.SetUserValue("ID", claims["ID"])
-		h.clients.Store(ctx.ID(), c)
-
 		return nil
 	})
-}
-
-func (h *handler) sendErrorResponse(c *fiber.Ctx, code int, message string) error {
-	response := &errorhandler.Response{Code: code, Message: message, StatusCode: fiber.StatusUnauthorized}
-	return c.Status(fiber.StatusUnauthorized).JSON(response)
 }

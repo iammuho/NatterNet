@@ -24,8 +24,13 @@ func (h *handler) RegisterRoutes(f fiber.Router) {
 
 	chat := f.Group("/chat", middleware.Protected())
 	{
+		// Room routes
 		chat.Post("/room", h.createRoom())
 		chat.Get("/rooms", h.queryRooms())
+		chat.Post("/room/:roomID/join", h.joinRoom())
+		chat.Post("/room/:roomID/leave", h.leaveRoom())
+
+		// Message routes
 		chat.Post("/room/:roomID/message", h.createMessage())
 		chat.Get("/room/:roomID/messages", h.queryMessages())
 	}

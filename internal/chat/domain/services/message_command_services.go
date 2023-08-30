@@ -11,6 +11,7 @@ import (
 	"github.com/iammuho/natternet/internal/chat/domain/event/types"
 	"github.com/iammuho/natternet/internal/chat/domain/repository"
 	"github.com/iammuho/natternet/internal/chat/domain/values"
+	websocketTypes "github.com/iammuho/natternet/internal/user/domain/event/types"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 
 	"github.com/gofiber/fiber/v2"
@@ -77,6 +78,13 @@ func (r *messageCommandDomainServices) CreateMessage(req *dto.CreateMessageReqDT
 	// publish to nats
 	messageJSON, _ := json.Marshal(values.NewMessageValueFromMessage(messageEntity))
 	_, publishErr := r.ctx.GetNatsContext().GetJetStreamContext().Publish(types.MessageCreatedEvent, messageJSON)
+
+	if publishErr != nil {
+		r.ctx.GetLogger().Error(publishErr.Error())
+	}
+
+	// Publishes to user websocket
+	_, publishErr = r.ctx.GetNatsContext().GetJetStreamContext().Publish(websocketTypes.MessageCreatedEvent, messageJSON)
 
 	if publishErr != nil {
 		r.ctx.GetLogger().Error(publishErr.Error())

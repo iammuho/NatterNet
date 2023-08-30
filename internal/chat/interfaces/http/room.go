@@ -141,3 +141,107 @@ func (h *handler) queryRooms() fiber.Handler {
 		return f.Status(fiber.StatusOK).JSON(res)
 	}
 }
+
+// joinRoom joins a user to a chat room.
+// @Summary Join a chat room
+// @Description Allows authenticated users to join a chat room.
+// @Tags Room
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param   roomID path string true "Room ID"
+// @Success 200 {object} values.RoomValue
+// @Failure 400 {object} errorhandler.Response
+// @Router /chat/room/{roomID}/join [post]
+func (h *handler) joinRoom() fiber.Handler {
+	return func(f *fiber.Ctx) error {
+		// Serialize the body
+		var request = &dto.JoinRoomReqDTO{
+			RoomID: f.Params("roomID"),
+			UserID: f.Locals("userID").(string),
+		}
+
+		validate := validator.New()
+
+		// Validate the request
+		err := validate.Struct(request)
+		if err != nil {
+			h.application.AppContext.GetLogger().Logger.Warn(
+				errorhandler.ValidationErrorMessage,
+				zap.Error(err),
+			)
+
+			fields := []string{}
+			for _, err := range err.(validator.ValidationErrors) {
+				fields = append(fields, err.Field())
+			}
+			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
+		}
+
+		// Handle the request
+		room, resErr := h.application.RoomCommandHandler.JoinRoom(request)
+
+		if resErr != nil {
+			h.application.AppContext.GetLogger().Logger.Warn(
+				errorhandler.InvalidCredentialsMessage,
+				zap.Error(err),
+			)
+
+			return f.Status(resErr.StatusCode).JSON(resErr)
+		}
+
+		return f.Status(fiber.StatusOK).JSON(room)
+	}
+}
+
+// leaveRoom removes a user from a chat room.
+// @Summary Leave a chat room
+// @Description Allows authenticated users to leave a chat room.
+// @Tags Room
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param   roomID path string true "Room ID"
+// @Success 200 {object} values.RoomValue
+// @Failure 400 {object} errorhandler.Response
+// @Router /chat/room/{roomID}/leave [post]
+func (h *handler) leaveRoom() fiber.Handler {
+	return func(f *fiber.Ctx) error {
+		// Serialize the body
+		var request = &dto.LeaveRoomReqDTO{
+			RoomID: f.Params("roomID"),
+			UserID: f.Locals("userID").(string),
+		}
+
+		validate := validator.New()
+
+		// Validate the request
+		err := validate.Struct(request)
+		if err != nil {
+			h.application.AppContext.GetLogger().Logger.Warn(
+				errorhandler.ValidationErrorMessage,
+				zap.Error(err),
+			)
+
+			fields := []string{}
+			for _, err := range err.(validator.ValidationErrors) {
+				fields = append(fields, err.Field())
+			}
+			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
+		}
+
+		// Handle the request
+		_, resErr := h.application.RoomCommandHandler.LeaveRoom(request)
+
+		if resErr != nil {
+			h.application.AppContext.GetLogger().Logger.Warn(
+				errorhandler.InvalidCredentialsMessage,
+				zap.Error(err),
+			)
+
+			return f.Status(resErr.StatusCode).JSON(resErr)
+		}
+
+		return f.Status(fiber.StatusOK).JSON(nil)
+	}
+}

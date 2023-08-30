@@ -28,6 +28,7 @@ require (
 	github.com/go-openapi/swag v0.22.4 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/rakyll/hey v0.1.4 // indirect
 	github.com/swaggo/files/v2 v2.0.0 // indirect
 	golang.org/x/tools v0.12.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

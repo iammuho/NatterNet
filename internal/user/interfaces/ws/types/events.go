@@ -8,4 +8,11 @@ const (
 	// Health Check
 	MessageTypeHealthCheck         = "health.check"
 	MessageTypeConnectionConnected = "connection.connected"
+
+	// Message
+	MessageTypeMessageCreated = "message.created"
+
+	// Room
+	MessageTypeRoomUserJoined = "room.user.joined"
+	MessageTypeRoomUserLeft   = "room.user.left"
 )

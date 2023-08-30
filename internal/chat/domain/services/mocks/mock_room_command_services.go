@@ -51,6 +51,36 @@ func (mr *MockRoomCommandDomainServicesMockRecorder) CreateRoom(arg0 interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRoom", reflect.TypeOf((*MockRoomCommandDomainServices)(nil).CreateRoom), arg0)
 }
 
+// JoinRoom mocks base method.
+func (m *MockRoomCommandDomainServices) JoinRoom(arg0 *dto.JoinRoomReqDTO) (*values.RoomValue, *errorhandler.Response) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "JoinRoom", arg0)
+	ret0, _ := ret[0].(*values.RoomValue)
+	ret1, _ := ret[1].(*errorhandler.Response)
+	return ret0, ret1
+}
+
+// JoinRoom indicates an expected call of JoinRoom.
+func (mr *MockRoomCommandDomainServicesMockRecorder) JoinRoom(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "JoinRoom", reflect.TypeOf((*MockRoomCommandDomainServices)(nil).JoinRoom), arg0)
+}
+
+// LeaveRoom mocks base method.
+func (m *MockRoomCommandDomainServices) LeaveRoom(arg0 *dto.LeaveRoomReqDTO) (*values.RoomValue, *errorhandler.Response) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LeaveRoom", arg0)
+	ret0, _ := ret[0].(*values.RoomValue)
+	ret1, _ := ret[1].(*errorhandler.Response)
+	return ret0, ret1
+}
+
+// LeaveRoom indicates an expected call of LeaveRoom.
+func (mr *MockRoomCommandDomainServicesMockRecorder) LeaveRoom(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LeaveRoom", reflect.TypeOf((*MockRoomCommandDomainServices)(nil).LeaveRoom), arg0)
+}
+
 // UpdateLastMessage mocks base method.
 func (m *MockRoomCommandDomainServices) UpdateLastMessage(arg0 string, arg1 *values.MessageValue) *errorhandler.Response {
 	m.ctrl.T.Helper()
