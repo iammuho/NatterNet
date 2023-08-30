@@ -12,6 +12,7 @@ import (
 	"github.com/iammuho/natternet/internal/chat/domain/repository"
 	"github.com/iammuho/natternet/internal/chat/domain/values"
 	websocketTypes "github.com/iammuho/natternet/internal/user/domain/event/types"
+	websocketValues "github.com/iammuho/natternet/internal/user/domain/values/websocket"
 	"github.com/iammuho/natternet/pkg/errorhandler"
 
 	"github.com/gofiber/fiber/v2"
@@ -84,6 +85,25 @@ func (r *messageCommandDomainServices) CreateMessage(req *dto.CreateMessageReqDT
 	}
 
 	// Publishes to user websocket
+	_, publishErr = r.ctx.GetNatsContext().GetJetStreamContext().Publish(websocketTypes.MessageCreatedEvent, messageJSON)
+
+	if publishErr != nil {
+		r.ctx.GetLogger().Error(publishErr.Error())
+	}
+
+	// Publishes to user websocket
+	websocketEventValue := websocketValues.RoomNewMessageWebsocketValue{
+		SenderID: req.SenderID,
+		RoomID:   roomEntity.GetID(),
+		Message:  values.NewMessageValueFromMessage(messageEntity),
+	}
+	// Loop users and add them to the event with userid
+	for _, user := range roomEntity.GetRoomUsers() {
+		websocketEventValue.Users = append(websocketEventValue.Users, user.UserID)
+	}
+
+	messageJSON, _ = json.Marshal(websocketEventValue)
+
 	_, publishErr = r.ctx.GetNatsContext().GetJetStreamContext().Publish(websocketTypes.MessageCreatedEvent, messageJSON)
 
 	if publishErr != nil {

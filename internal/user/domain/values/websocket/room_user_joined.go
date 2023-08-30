@@ -1,6 +1,6 @@
 package websocket
 
-type RoomUserJoinedEventValue struct {
+type RoomUserJoinedWebsocketValue struct {
 	Username string   `json:"username"`
 	UserID   string   `json:"user_id"`
 	Users    []string `json:"room_users"`

@@ -125,7 +125,7 @@ func (r *roomCommandDomainServices) JoinRoom(req *dto.JoinRoomReqDTO) (*values.R
 	}
 
 	// Publishes to user websocket
-	websocketEventValue := websocketValues.RoomUserJoinedEventValue{
+	websocketEventValue := websocketValues.RoomUserJoinedWebsocketValue{
 		UserID: req.UserID,
 		RoomID: roomEntity.GetID(),
 	}

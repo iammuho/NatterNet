@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/dgrr/websocket"
-	"github.com/iammuho/natternet/internal/chat/domain/values"
 	eventTypes "github.com/iammuho/natternet/internal/user/domain/event/types"
 	websocketValues "github.com/iammuho/natternet/internal/user/domain/values/websocket"
 	"github.com/iammuho/natternet/internal/user/interfaces/ws/types"
@@ -34,7 +33,7 @@ func (h *handler) onMessageCreated(msg *nats.Msg) error {
 	msg.Ack()
 
 	// Unmarshal the message
-	var event values.MessageValue
+	var event websocketValues.RoomNewMessageWebsocketValue
 	err := json.Unmarshal(msg.Data, &event)
 
 	if err != nil {
@@ -45,18 +44,22 @@ func (h *handler) onMessageCreated(msg *nats.Msg) error {
 	h.clients.Range(func(client, v interface{}) bool {
 		nc := v.(*websocket.Conn)
 
-		if nc.UserValue("ID").(string) == event.SenderID {
-			h.application.AppContext.GetLogger().Logger.Info("Sending message created to ws client with ID: ", zap.String("ID", nc.UserValue("ID").(string)))
+		// Range the users
+		for _, user := range event.Users {
 
-			// Create the event model
-			eventModel := &types.WebsocketMessage{}
-			eventModel.New(types.MessageTypeMessageCreated)
-			eventModel.ConnectionID = fmt.Sprintf("%d", nc.ID())
-			eventModel.Message = event
+			if nc.UserValue("ID").(string) == user {
+				h.application.AppContext.GetLogger().Logger.Info("Sending message created to ws client with ID: ", zap.String("ID", nc.UserValue("ID").(string)))
 
-			nc.Write(eventModel.ToJson())
+				// Create the event model
+				eventModel := &types.WebsocketMessage{}
+				eventModel.New(types.MessageTypeMessageCreated)
+				eventModel.ConnectionID = fmt.Sprintf("%d", nc.ID())
+				eventModel.Message = event.Message
 
-			return true
+				nc.Write(eventModel.ToJson())
+
+				return true
+			}
 		}
 
 		return true
@@ -70,7 +73,7 @@ func (h *handler) onUserJoinedRoom(msg *nats.Msg) error {
 	msg.Ack()
 
 	// Unmarshal the message
-	var event websocketValues.RoomUserJoinedEventValue
+	var event websocketValues.RoomUserJoinedWebsocketValue
 	err := json.Unmarshal(msg.Data, &event)
 
 	if err != nil {
