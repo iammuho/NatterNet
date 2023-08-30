@@ -6,7 +6,6 @@ Your real-time chat application built with Golang, MongoDB, WebSockets, and Fast
 
 1. [Introduction](#introduction)
 2. [Blog Posts](#📚-blog-posts-for-deeper-understanding)
-2. [Features](#features)
 3. [Wiki](#wiki)
 4. [API Documentation](#api-documentation-with-swagger)
 5. [License](#license)
