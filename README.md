@@ -5,6 +5,7 @@ Your real-time chat application built with Golang, MongoDB, WebSockets, and Fast
 ## Table of Contents
 
 1. [Introduction](#introduction)
+2. [Blog Posts](#📚-blog-posts-for-deeper-understanding)
 2. [Features](#features)
 3. [Local Development](#local-development)
 4. [API Documentation](#api-documentation-with-swagger)
@@ -13,6 +14,19 @@ Your real-time chat application built with Golang, MongoDB, WebSockets, and Fast
 ## Introduction
 
 NatterNet is a fast and lightweight chat WebSocket service built with Golang, MongoDB, WebSockets, and Fasthttp. It aims to provide a scalable and efficient platform for real-time chat applications.
+
+## 📚 Blog Posts for Deeper Understanding
+
+Want to get more in-depth insights into NatterNet? Check out our blog posts:
+
+1. **[Introducing NatterNet: A Domain-Driven Real-Time Chat Application](https://muhammetarslan.substack.com/p/introducing-natternet-a-domain-driven)**
+    - Introduction to NatterNet and its architecture.
+
+2. **[NatterNet: A Deep Dive into Clean Architecture](https://muhammetarslan.substack.com/p/natternet-a-deep-dive-into-clean)**
+    - Learn the details of how Clean Architecture is implemented in NatterNet.
+
+3. **[Deep Dive into Domain-Driven Design in NatterNet](https://muhammetarslan.substack.com/p/deep-dive-into-domain-driven-design)**
+    - Understand the nuances of Domain-Driven Design as it's applied in NatterNet.
 
 ## Features
 
