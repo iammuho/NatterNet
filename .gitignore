@@ -22,3 +22,5 @@ go.work
 
 # Jetstream Data for local compose
 jetstream-data
+
+.DS_Store
