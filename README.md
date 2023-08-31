@@ -25,10 +25,10 @@ NatterNet is a fast and lightweight chat WebSocket service built with Golang, Mo
 
 - **Real-time Communication**
   - WebSocket support for real-time updates.
+  - Real-time "typing..." status display.
 
 - **Rooms**
   - Create, join, and leave rooms.
-  - Real-time "typing..." status display.
 
 - **Message Types**
   - Support for text messages.
