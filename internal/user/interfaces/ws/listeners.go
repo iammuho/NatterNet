@@ -22,6 +22,8 @@ func (h *handler) setupListeners() {
 			return h.onMessageCreated(msg)
 		case eventTypes.RoomUserJoinedEvent:
 			return h.onUserJoinedRoom(msg)
+		case eventTypes.RoomEvents:
+			return h.onRoomEvent(msg)
 		}
 
 		return nil
@@ -100,6 +102,53 @@ func (h *handler) onUserJoinedRoom(msg *nats.Msg) error {
 				eventModel.New(types.MessageTypeRoomUserJoined)
 				eventModel.ConnectionID = fmt.Sprintf("%d", nc.ID())
 				eventModel.Message = event
+
+				nc.Write(eventModel.ToJson())
+
+				return true
+
+			}
+
+		}
+
+		return true
+	})
+
+	return nil
+}
+
+// onRoomEvent handles the room event
+func (h *handler) onRoomEvent(msg *nats.Msg) error {
+	msg.Ack()
+
+	// Unmarshal the message
+	var event websocketValues.RoomNewEventWebsocketValue
+	err := json.Unmarshal(msg.Data, &event)
+
+	if err != nil {
+		return err
+	}
+
+	// Check if the user ID is in clients
+	h.clients.Range(func(client, v interface{}) bool {
+		nc := v.(*websocket.Conn)
+
+		// Range the users
+		for _, user := range event.UserIDs {
+			// If the senderID is the same as the client ID, skip
+			if nc.UserValue("ID").(string) == event.SenderID {
+				return true
+			}
+
+			// If the user ID is in the connected clients, send the event
+			if nc.UserValue("ID").(string) == user {
+				h.application.AppContext.GetLogger().Logger.Info("Sending room event to ws client with ID: ", zap.String("ID", nc.UserValue("ID").(string)))
+
+				// Create the event model
+				eventModel := &types.WebsocketMessage{}
+				eventModel.New(types.MessageTypeRoomEvent)
+				eventModel.ConnectionID = fmt.Sprintf("%d", nc.ID())
+				eventModel.Message = map[string]string{"room_id": event.RoomID, "user_id": event.SenderID, "event_type": event.EventType}
 
 				nc.Write(eventModel.ToJson())
 

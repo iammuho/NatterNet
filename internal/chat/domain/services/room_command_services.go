@@ -21,6 +21,7 @@ type RoomCommandDomainServices interface {
 	UpdateLastMessage(string, *values.MessageValue) *errorhandler.Response
 	JoinRoom(*dto.JoinRoomReqDTO) (*values.RoomValue, *errorhandler.Response)
 	LeaveRoom(*dto.LeaveRoomReqDTO) (*values.RoomValue, *errorhandler.Response)
+	SendRoomEvent(*dto.SendRoomEventReqDTO) *errorhandler.Response
 }
 
 type roomCommandDomainServices struct {
@@ -175,4 +176,49 @@ func (r *roomCommandDomainServices) LeaveRoom(req *dto.LeaveRoomReqDTO) (*values
 	}
 
 	return values.NewRoomValueFromRoom(roomEntity), nil
+}
+
+// SendRoomEvent sends an event to a room
+func (r *roomCommandDomainServices) SendRoomEvent(req *dto.SendRoomEventReqDTO) *errorhandler.Response {
+	// Query the room
+	room, err := r.roomRepository.GetRoomByID(req.RoomID)
+
+	if err != nil {
+		return err
+	}
+
+	if room == nil {
+		return &errorhandler.Response{Code: errorhandler.RoomNotFoundErrorCode, Message: errorhandler.RoomNotFoundMessage, StatusCode: fiber.StatusNotFound}
+	}
+
+	// Convert the room to entity
+	roomEntity := room.ToRoom()
+
+	// Check if the user is in the room
+	if !roomEntity.CheckRoomUserExists(req.UserID) {
+		return &errorhandler.Response{Code: errorhandler.UserIsNotInRoomCode, Message: errorhandler.UserIsNotInRoomMessage, StatusCode: fiber.StatusBadRequest}
+	}
+
+	// Publishes to user websocket
+	websocketEventValue := websocketValues.RoomNewEventWebsocketValue{
+		SenderID:  req.UserID,
+		RoomID:    roomEntity.GetID(),
+		UserIDs:   []string{},
+		EventType: req.EventType,
+	}
+
+	// Loop users and add them to the event with userid
+	for _, user := range roomEntity.GetRoomUsers() {
+		websocketEventValue.UserIDs = append(websocketEventValue.UserIDs, user.UserID)
+	}
+
+	messageJSON, _ := json.Marshal(websocketEventValue)
+
+	_, publishErr := r.ctx.GetNatsContext().GetJetStreamContext().Publish(websocketTypes.RoomEvents, messageJSON)
+
+	if publishErr != nil {
+		r.ctx.GetLogger().Error(publishErr.Error())
+	}
+
+	return nil
 }

@@ -81,6 +81,20 @@ func (mr *MockRoomCommandDomainServicesMockRecorder) LeaveRoom(arg0 interface{})
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LeaveRoom", reflect.TypeOf((*MockRoomCommandDomainServices)(nil).LeaveRoom), arg0)
 }
 
+// SendRoomEvent mocks base method.
+func (m *MockRoomCommandDomainServices) SendRoomEvent(arg0 *dto.SendRoomEventReqDTO) *errorhandler.Response {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendRoomEvent", arg0)
+	ret0, _ := ret[0].(*errorhandler.Response)
+	return ret0
+}
+
+// SendRoomEvent indicates an expected call of SendRoomEvent.
+func (mr *MockRoomCommandDomainServicesMockRecorder) SendRoomEvent(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendRoomEvent", reflect.TypeOf((*MockRoomCommandDomainServices)(nil).SendRoomEvent), arg0)
+}
+
 // UpdateLastMessage mocks base method.
 func (m *MockRoomCommandDomainServices) UpdateLastMessage(arg0 string, arg1 *values.MessageValue) *errorhandler.Response {
 	m.ctrl.T.Helper()

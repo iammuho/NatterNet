@@ -60,7 +60,7 @@ func (h *handler) createRoom() fiber.Handler {
 
 		if resErr != nil {
 			h.application.AppContext.GetLogger().Logger.Warn(
-				errorhandler.InvalidCredentialsMessage,
+				resErr.Message.(string),
 				zap.Error(err),
 			)
 
@@ -131,7 +131,7 @@ func (h *handler) queryRooms() fiber.Handler {
 
 		if resErr != nil {
 			h.application.AppContext.GetLogger().Logger.Warn(
-				errorhandler.InvalidCredentialsMessage,
+				resErr.Message.(string),
 				zap.Error(err),
 			)
 
@@ -183,7 +183,7 @@ func (h *handler) joinRoom() fiber.Handler {
 
 		if resErr != nil {
 			h.application.AppContext.GetLogger().Logger.Warn(
-				errorhandler.InvalidCredentialsMessage,
+				resErr.Message.(string),
 				zap.Error(err),
 			)
 
@@ -235,7 +235,69 @@ func (h *handler) leaveRoom() fiber.Handler {
 
 		if resErr != nil {
 			h.application.AppContext.GetLogger().Logger.Warn(
-				errorhandler.InvalidCredentialsMessage,
+				resErr.Message.(string),
+				zap.Error(err),
+			)
+
+			return f.Status(resErr.StatusCode).JSON(resErr)
+		}
+
+		return f.Status(fiber.StatusOK).JSON(nil)
+	}
+}
+
+// sendRoomEvent creates a new event in a chat room.
+// @Summary Sends a room event
+// @Description Allows authenticated users to send a new event in a chat room.
+// @Tags Room
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param   roomID path string true "Room ID"
+// @Param   body body string true "Event body"
+// @Success 200 {object} dto.SendRoomEventReqDTO
+// @Failure 400 {object} errorhandler.Response
+// @Router /chat/room/{roomID}/event [post]
+func (h *handler) sendRoomEvent() fiber.Handler {
+	return func(f *fiber.Ctx) error {
+		// Serialize the body
+		var request dto.SendRoomEventReqDTO
+		err := f.BodyParser(&request)
+		if err != nil {
+			h.application.AppContext.GetLogger().Logger.Warn(
+				errorhandler.RequestBodyParseErrorMessage,
+				zap.Error(err),
+			)
+
+			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.RequestBodyParseErrorCode, Message: errorhandler.RequestBodyParseErrorMessage, StatusCode: fiber.StatusBadRequest})
+		}
+
+		request.RoomID = f.Params("roomID")
+		request.UserID = f.Locals("userID").(string)
+
+		validate := validator.New()
+
+		// Validate the request
+		err = validate.Struct(request)
+		if err != nil {
+			h.application.AppContext.GetLogger().Logger.Warn(
+				errorhandler.ValidationErrorMessage,
+				zap.Error(err),
+			)
+
+			fields := []string{}
+			for _, err := range err.(validator.ValidationErrors) {
+				fields = append(fields, err.Field())
+			}
+			return f.Status(fiber.StatusBadRequest).JSON(&errorhandler.Response{Code: errorhandler.ValidationErrorCode, Message: fmt.Sprintf("invalid fields %s", fields), StatusCode: fiber.StatusBadRequest})
+		}
+
+		// Handle the request
+		resErr := h.application.RoomCommandHandler.SendRoomEvent(&request)
+
+		if resErr != nil {
+			h.application.AppContext.GetLogger().Logger.Warn(
+				resErr.Message.(string),
 				zap.Error(err),
 			)
 
