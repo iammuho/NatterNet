@@ -7,9 +7,9 @@ Your real-time chat application built with Golang, MongoDB, WebSockets, and Fast
 1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Resources & Community](#resources--community)
-5. [API Documentation](#api-documentation-with-swagger)
-6. [Blog Posts](#📚-blog-posts-for-deeper-understanding)
-7. [License](#license)
+4. [API Documentation](#api-documentation-with-swagger)
+5. [Blog Posts](#📚-blog-posts-for-deeper-understanding)
+6. [License](#license)
 
 ## Introduction
 
