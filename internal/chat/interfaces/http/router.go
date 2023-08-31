@@ -29,6 +29,7 @@ func (h *handler) RegisterRoutes(f fiber.Router) {
 		chat.Get("/rooms", h.queryRooms())
 		chat.Post("/room/:roomID/join", h.joinRoom())
 		chat.Post("/room/:roomID/leave", h.leaveRoom())
+		chat.Post("/room/:roomID/event", h.sendRoomEvent())
 
 		// Message routes
 		chat.Post("/room/:roomID/message", h.createMessage())

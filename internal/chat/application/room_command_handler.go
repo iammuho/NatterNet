@@ -12,6 +12,7 @@ type RoomCommandHandler interface {
 	CreateRoom(*dto.CreateRoomReqDTO) (*values.RoomValue, *errorhandler.Response)
 	JoinRoom(*dto.JoinRoomReqDTO) (*values.RoomValue, *errorhandler.Response)
 	LeaveRoom(*dto.LeaveRoomReqDTO) (*values.RoomValue, *errorhandler.Response)
+	SendRoomEvent(*dto.SendRoomEventReqDTO) *errorhandler.Response
 }
 
 type roomCommandHandler struct {
@@ -36,4 +37,8 @@ func (r *roomCommandHandler) JoinRoom(req *dto.JoinRoomReqDTO) (*values.RoomValu
 
 func (r *roomCommandHandler) LeaveRoom(req *dto.LeaveRoomReqDTO) (*values.RoomValue, *errorhandler.Response) {
 	return r.roomCommandServices.LeaveRoom(req)
+}
+
+func (r *roomCommandHandler) SendRoomEvent(req *dto.SendRoomEventReqDTO) *errorhandler.Response {
+	return r.roomCommandServices.SendRoomEvent(req)
 }

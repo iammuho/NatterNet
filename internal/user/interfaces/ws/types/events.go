@@ -15,4 +15,5 @@ const (
 	// Room
 	MessageTypeRoomUserJoined = "room.user.joined"
 	MessageTypeRoomUserLeft   = "room.user.left"
+	MessageTypeRoomEvent      = "room.event"
 )

@@ -4,6 +4,13 @@ import (
 	"time"
 )
 
+type RoomEventType string
+
+const (
+	RoomEventTypeTypingStarted RoomEventType = "typing_started"
+	RoomEventTypeTypingEnded   RoomEventType = "typing_ended"
+)
+
 type Room struct {
 	id string
 
