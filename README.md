@@ -6,10 +6,11 @@ Your real-time chat application built with Golang, MongoDB, WebSockets, and Fast
 
 1. [Introduction](#introduction)
 2. [Features](#features)
-3. [Wiki](#wiki)
-4. [API Documentation](#api-documentation-with-swagger)
-5. [Blog Posts](#📚-blog-posts-for-deeper-understanding)
-6. [License](#license)
+3. [Resources & Community](#resources--community)
+4. [Wiki](#wiki)
+5. [API Documentation](#api-documentation-with-swagger)
+6. [Blog Posts](#📚-blog-posts-for-deeper-understanding)
+7. [License](#license)
 
 ## Introduction
 
@@ -53,6 +54,20 @@ NatterNet is a fast and lightweight chat WebSocket service built with Golang, Mo
 - Message editing and deletion.
 - Multi-language support.
 - Rate limiting for API requests.
+
+## Resources & Community
+
+We've compiled a list of resources that will help you understand, use, and contribute to NatterNet more effectively:
+
+- **API Documentation**: Join our [Postman Team](https://app.getpostman.com/join-team?invite_code=cc442cb6e4c1bcd8c4bebe1246451a6e&target_code=ddee05fca163c199c6e7df2f31a3672b) to explore NatterNet's API.
+  
+- **Community Chat**: Have questions, feedback, or just want to chat? Join our [Discord Server](https://discord.gg/ewxXez4z).
+  
+- **Wiki**: For detailed guides, FAQs, and other information, check out the [NatterNet Wiki](https://github.com/iammuho/NatterNet/wiki).
+  
+- **Blog Posts**: Deep dives into the architecture, domain-driven design, and other facets of NatterNet are available in our [Substack Blog](https://muhammetarslan.substack.com/t/natternet).
+
+Feel free to contribute by submitting PRs, opening issues, or spreading the word.
 
 ## Wiki
 
