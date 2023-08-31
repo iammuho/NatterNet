@@ -58,7 +58,7 @@ NatterNet is a fast and lightweight chat WebSocket service built with Golang, Mo
 
 We've compiled a list of resources that will help you understand, use, and contribute to NatterNet more effectively:
 
-- **API Documentation**: Join our [Postman Team](https://app.getpostman.com/join-team?invite_code=cc442cb6e4c1bcd8c4bebe1246451a6e&target_code=ddee05fca163c199c6e7df2f31a3672b) to explore NatterNet's API.
+- **Postman Team**: Join our [Postman Team](https://app.getpostman.com/join-team?invite_code=cc442cb6e4c1bcd8c4bebe1246451a6e&target_code=ddee05fca163c199c6e7df2f31a3672b) to explore NatterNet's API.
   
 - **Community Chat**: Have questions, feedback, or just want to chat? Join our [Discord Server](https://discord.gg/ewxXez4z).
   
