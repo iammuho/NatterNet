@@ -7,7 +7,6 @@ Your real-time chat application built with Golang, MongoDB, WebSockets, and Fast
 1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Resources & Community](#resources--community)
-4. [Wiki](#wiki)
 5. [API Documentation](#api-documentation-with-swagger)
 6. [Blog Posts](#📚-blog-posts-for-deeper-understanding)
 7. [License](#license)
@@ -68,12 +67,6 @@ We've compiled a list of resources that will help you understand, use, and contr
 - **Blog Posts**: Deep dives into the architecture, domain-driven design, and other facets of NatterNet are available in our [Substack Blog](https://muhammetarslan.substack.com/t/natternet).
 
 Feel free to contribute by submitting PRs, opening issues, or spreading the word.
-
-## Wiki
-
-
-For detailed information on how to get started, frequently asked questions, and more, check out the [NatterNet GitHub Wiki](https://github.com/iammuho/NatterNet/wiki).
-
 
 ## API Documentation with Swagger
 
