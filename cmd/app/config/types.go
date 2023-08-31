@@ -44,8 +44,8 @@ type config struct {
 
 	// JWT provides the JWT configuration.
 	JWT struct {
-		PublicKeyPath  string `env:"JWT_PUBLIC_KEY_PATH" envDefault:"/etc/ssl/certs/client.pub.pem"`
-		PrivateKeyPath string `env:"JWT_PRIVATE_KEY_PATH" envDefault:"/etc/ssl/certs/client.pem"`
+		PublicKeyPath  string `env:"JWT_PUBLIC_KEY_PATH" envDefault:"/etc/ssl/certs/natternet.public.pem"`
+		PrivateKeyPath string `env:"JWT_PRIVATE_KEY_PATH" envDefault:"/etc/ssl/certs/natternet.private.pem"`
 		Kid            string `env:"JWT_KID" envDefault:"natternet"`
 		Issuer         string `env:"JWT_ISSUER" envDefault:"natternet"`
 		Subject        string `env:"JWT_SUBJECT" envDefault:"natternet"`
