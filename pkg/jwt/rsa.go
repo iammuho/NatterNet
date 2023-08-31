@@ -17,11 +17,11 @@ func (j *jwt) loadPublicKey() {
 
 	var parsedKey interface{}
 
-	if rsaPublicKey.Type != "RSA PUBLIC KEY" {
+	if rsaPublicKey.Type != "PUBLIC KEY" {
 		log.Fatal("RSA Public Key File is wrong")
 	}
 
-	if parsedKey, err = x509.ParsePKCS1PublicKey(rsaPublicKey.Bytes); err != nil {
+	if parsedKey, err = x509.ParsePKIXPublicKey(rsaPublicKey.Bytes); err != nil {
 		log.Fatal("Unable to decode RSA Public key")
 	}
 
@@ -41,7 +41,7 @@ func (j *jwt) loadPrivateKey() {
 
 	rsaPrivKey := loadRSAFile(j.options.PrivateKeyPath)
 
-	if rsaPrivKey.Type != "RSA PRIVATE KEY" {
+	if rsaPrivKey.Type != "PRIVATE KEY" {
 		log.Fatal("RSA Private Key File is wrong")
 	}
 

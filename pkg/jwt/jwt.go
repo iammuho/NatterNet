@@ -6,15 +6,13 @@ import (
 	"time"
 
 	"github.com/iammuho/natternet/pkg/errorhandler"
-	"github.com/iammuho/natternet/pkg/utils"
 
 	"github.com/gofiber/fiber/v2"
-	jose "gopkg.in/square/go-jose.v2"
-	jwtPKG "gopkg.in/square/go-jose.v2/jwt"
+	jwtPKG "github.com/golang-jwt/jwt/v5"
 )
 
 type Claims struct {
-	*jwtPKG.Claims
+	jwtPKG.Claims
 	CustomClaims map[string]interface{} `json:"customClaims"`
 }
 
@@ -65,65 +63,48 @@ func (j *jwt) CreatePair(claims map[string]interface{}) (*JWTResponse, *errorhan
 
 // CreateJWT aims to create a new JSON WEB TOKEN
 func (j *jwt) createJWT(claims map[string]interface{}, expire bool, expireDate time.Time) (string, error) {
-	// create Square.jose signing key
-	key := jose.SigningKey{Algorithm: jose.RS256, Key: j.privateKey}
+	// create a new JWT with the claims and the signing method
+	t := jwtPKG.NewWithClaims(jwtPKG.SigningMethodRS256, // (1)!
+		jwtPKG.MapClaims{ // (2)!
+			"iss": j.options.Issuer,
+			"sub": j.options.Subject,
+			"exp": expireDate.Unix(),
+			"iat": time.Now().Unix(),
+			"kid": j.options.Kid,
+			// add the custom claims
+			"custom": claims,
+		})
 
-	// create a Square.jose RSA signer, used to sign the JWT
-	var signerOpts = jose.SignerOptions{}
-	signerOpts.WithType("JWT")
-	signerOpts.WithHeader("kid", j.options.Kid)
-	rsaSigner, err := jose.NewSigner(key, &signerOpts)
+	ss, err := t.SignedString(j.privateKey)
 
 	if err != nil {
 		return "", err
 	}
 
-	// create an instance of Builder that uses the rsa signer
-	builder := jwtPKG.Signed(rsaSigner)
-
-	// public claims
-	pubClaims := &jwtPKG.Claims{
-		Issuer:   j.options.Issuer,
-		Subject:  j.options.Subject,
-		IssuedAt: jwtPKG.NewNumericDate(time.Now()),
-		Expiry:   jwtPKG.NewNumericDate(expireDate),
-	}
-
-	c := Claims{
-		pubClaims,
-		claims,
-	}
-
-	// Add the claims. Note Claims returns a Builder so can chain
-	builder = builder.Claims(c)
-
-	// validate all ok, sign with the RSA key, and return a compact JWT
-	rawJWT, err := builder.CompactSerialize()
-	if err != nil {
-		return "", err
-	}
-
-	return rawJWT, nil
+	return ss, nil
 }
 
 // ParseJWT parses the given JWT token into struct
 func (j *jwt) ParseJWT(auth string) (map[string]interface{}, *errorhandler.Response) {
-
 	// Parse the JWT Token
-	parsedJWT, err := jwtPKG.ParseSigned(parseBearerAuth(auth))
+	token, err := jwtPKG.Parse(parseBearerAuth(auth), func(token *jwtPKG.Token) (interface{}, error) {
+		return j.publicKey, nil
+	})
 
 	if err != nil {
 		return nil, &errorhandler.Response{Code: errorhandler.InvalidAccessTokenErrorCode, Message: errorhandler.InvalidAccessTokenMessage, StatusCode: fiber.StatusBadRequest}
 	}
 
 	out := Claims{}
-	err = parsedJWT.Claims(j.publicKey, &out)
-	if err != nil {
-		return nil, &errorhandler.Response{Code: errorhandler.InvalidAccessTokenErrorCode, Message: errorhandler.InvalidAccessTokenMessage, StatusCode: fiber.StatusBadRequest}
-	}
 
-	if utils.IsExpired(out.Expiry.Time()) {
-		return nil, &errorhandler.Response{Code: errorhandler.ExpiredAccessTokenErrorCode, Message: errorhandler.ExpiredAccessTokenMessage, StatusCode: fiber.StatusUnauthorized}
+	if claims, ok := token.Claims.(jwtPKG.MapClaims); ok && token.Valid {
+		if claims["custom"] == nil {
+			return nil, &errorhandler.Response{Code: errorhandler.InvalidAccessTokenErrorCode, Message: errorhandler.InvalidAccessTokenMessage, StatusCode: fiber.StatusBadRequest}
+		}
+
+		out.CustomClaims = claims["custom"].(map[string]interface{})
+	} else {
+		return nil, &errorhandler.Response{Code: errorhandler.InvalidAccessTokenErrorCode, Message: errorhandler.InvalidAccessTokenMessage, StatusCode: fiber.StatusBadRequest}
 	}
 
 	return out.CustomClaims, nil
