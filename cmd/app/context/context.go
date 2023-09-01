@@ -8,6 +8,7 @@ import (
 	"github.com/iammuho/natternet/pkg/logger"
 	"github.com/iammuho/natternet/pkg/mongodb"
 	"github.com/iammuho/natternet/pkg/nats"
+	"github.com/iammuho/natternet/pkg/storage"
 	"github.com/iammuho/natternet/pkg/utils"
 )
 
@@ -19,6 +20,7 @@ type AppContext interface {
 	GetJwtContext() jwt.JwtContext
 	GetMongoContext() mongodb.MongoDBContext
 	GetNatsContext() nats.NatsContext
+	GetStorageContext() storage.StorageContext
 	GetHashingFactory() hashing.HashingFactory
 	GetUUID() utils.UUID
 	GetTimer() utils.Timer

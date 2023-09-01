@@ -13,6 +13,7 @@ import (
 	logger "github.com/iammuho/natternet/pkg/logger"
 	mongodb "github.com/iammuho/natternet/pkg/mongodb"
 	nats "github.com/iammuho/natternet/pkg/nats"
+	storage "github.com/iammuho/natternet/pkg/storage"
 	utils "github.com/iammuho/natternet/pkg/utils"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -122,6 +123,20 @@ func (m *MockAppContext) GetNatsContext() nats.NatsContext {
 func (mr *MockAppContextMockRecorder) GetNatsContext() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetNatsContext", reflect.TypeOf((*MockAppContext)(nil).GetNatsContext))
+}
+
+// GetStorageContext mocks base method.
+func (m *MockAppContext) GetStorageContext() storage.StorageContext {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetStorageContext")
+	ret0, _ := ret[0].(storage.StorageContext)
+	return ret0
+}
+
+// GetStorageContext indicates an expected call of GetStorageContext.
+func (mr *MockAppContextMockRecorder) GetStorageContext() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetStorageContext", reflect.TypeOf((*MockAppContext)(nil).GetStorageContext))
 }
 
 // GetTimer mocks base method.

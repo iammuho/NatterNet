@@ -26,4 +26,7 @@ func init() {
 	if err := env.Parse(&Config.Nats); err != nil {
 		panic(err)
 	}
+	if err := env.Parse(&Config.Storage); err != nil {
+		panic(err)
+	}
 }

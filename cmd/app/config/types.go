@@ -55,4 +55,9 @@ type config struct {
 	Nats struct {
 		URL string `env:"NATS_URL" envDefault:"nats://localhost:4222"`
 	}
+
+	// Storage provides the storage configuration.
+	Storage struct {
+		Driver string `env:"STORAGE_DRIVER" envDefault:"file"`
+	}
 }
