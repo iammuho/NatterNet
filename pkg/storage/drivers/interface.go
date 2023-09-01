@@ -6,5 +6,5 @@ type DriverContext interface {
 	Get()
 	Put()
 	Delete()
-	List(string)
+	List(string) ([]string, error)
 }

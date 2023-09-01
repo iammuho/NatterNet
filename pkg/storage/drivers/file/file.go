@@ -1,7 +1,6 @@
 package file
 
 import (
-	"log"
 	"os"
 
 	"github.com/iammuho/natternet/pkg/storage/drivers"
@@ -30,11 +29,11 @@ func (f *file) Delete() {
 }
 
 // List lists files
-func (f *file) List(path string) {
+func (f *file) List(path string) ([]string, error) {
 	// list all files in a directory
 	dir, err := os.Open(path)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	// log
 	defer dir.Close()
@@ -44,19 +43,18 @@ func (f *file) List(path string) {
 
 	// log
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	// log
+	// prepare the list of files
+	var fileList []string
+
+	// loop through the files
 	for _, file := range files {
-		// log
-		if file.IsDir() {
-			// log
-			log.Print("Directory: ", file.Name())
-		} else {
-			// log
-			log.Print("File: ", file.Name())
-		}
+		// append the file name to the list
+		fileList = append(fileList, file.Name())
 	}
 
+	// return the list of files
+	return fileList, nil
 }
