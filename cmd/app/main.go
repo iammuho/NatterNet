@@ -19,6 +19,7 @@ import (
 	"github.com/iammuho/natternet/pkg/logger"
 	"github.com/iammuho/natternet/pkg/mongodb"
 	"github.com/iammuho/natternet/pkg/nats"
+	"github.com/iammuho/natternet/pkg/storage"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
@@ -94,8 +95,18 @@ func main() {
 		l.Panic("NATS Client failed to connect: %v", zap.Error(err))
 	}
 
+	// Add the storage
+	l.Info("Creating Storage", zap.String("driver", config.Config.Storage.Driver))
+	storageContext, err := storage.NewStorage(
+		storage.WithStorageDriver(config.Config.Storage.Driver),
+	)
+
+	if err != nil {
+		l.Panic("Storage failed to initialize: %v", zap.Error(err))
+	}
+
 	// Create the app context
-	ctx := context.NewAppContext(l, jwtContext, mongodbContext, natsContext)
+	ctx := context.NewAppContext(l, jwtContext, mongodbContext, natsContext, storageContext)
 
 	// Register the routes
 	v1 := httpServer.App.Group("/api/v1")
