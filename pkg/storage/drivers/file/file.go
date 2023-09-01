@@ -14,18 +14,69 @@ func NewFileStorage() drivers.DriverContext {
 }
 
 // Get returns a file
-func (f *file) Get() {
+func (f *file) Get(fileName string) ([]byte, error) {
+	// open the file
+	file, err := os.Open(fileName)
 
+	if err != nil {
+		return nil, err
+	}
+
+	// close the file
+	defer file.Close()
+
+	// get the file info
+	fileInfo, err := file.Stat()
+
+	if err != nil {
+		return nil, err
+	}
+
+	// prepare the buffer
+	buffer := make([]byte, fileInfo.Size())
+
+	// read the file
+	_, err = file.Read(buffer)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return buffer, nil
 }
 
 // Put puts a file
-func (f *file) Put() {
+func (f *file) Put(fileName string, content []byte) error {
+	// create the file
+	file, err := os.Create(fileName)
 
+	if err != nil {
+		return err
+	}
+
+	// close the file
+	defer file.Close()
+
+	// write the content
+	_, err = file.Write(content)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Delete deletes a file
-func (f *file) Delete() {
+func (f *file) Delete(fileName string) error {
+	// delete the file
+	err := os.Remove(fileName)
 
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // List lists files
@@ -35,13 +86,13 @@ func (f *file) List(path string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	// log
+
+	// close the directory
 	defer dir.Close()
 
 	// get the list of files
 	files, err := dir.Readdir(0)
 
-	// log
 	if err != nil {
 		return nil, err
 	}
